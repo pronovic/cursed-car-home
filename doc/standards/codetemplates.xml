@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="filecomment_context" deleted="false" description="Comment for created Java files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.filecomment" name="filecomment">/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *              C E D A R
+ *          S O L U T I O N S       "Software done right."
+ *           S O F T W A R E
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Copyright (c) ${year} Kenneth J. Pronovici.
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the Apache License, Version 2.0.
+ * See LICENSE for more information about the licensing terms.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Author   : Kenneth J. Pronovici &lt;pronovic@ieee.org&gt;
+ * Language : Java 6
+ * Project  : Secret Santa Exchange
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */</template></templates>

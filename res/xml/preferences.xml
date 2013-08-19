@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <PreferenceCategory android:title="Speakerphone Workaround" android:key="speakerphone">
+	    <CheckBoxPreference android:key="workaroundEnabled"
+	                android:title="Enabled"
+	                android:summary="Enable the speakerphone workaround"
+	                android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Monitoring Process" android:key="monitoring">
+        <CheckBoxPreference android:key="monitoringEnabled"
+                            android:title="Enabled"
+                            android:summary="Enable or disable the monitoring process"
+                            android:defaultValue="true" />
+
+        <ListPreference android:key="maxLifetimeMs"
+                        android:title="Process Lifetime"
+                        android:summary="Maximum lifetime of the monitoring process."
+                        android:defaultValue="120000"
+                        android:entries="@array/maximumThreadLifetimeMs"
+                        android:entryValues="@array/maximumThreadLifetimeMsValues"
+                        android:dependency="monitoringEnabled" />
+
+        <ListPreference android:key="initialDelayMs"
+                        android:title="Initial Delay"
+                        android:summary="Initial delay used by the monitoring process loop"
+                        android:defaultValue="100"
+                        android:entries="@array/initialDelayIntervalMs"
+                        android:entryValues="@array/initialDelayIntervalMsValues"
+                        android:dependency="monitoringEnabled" />
+
+        <ListPreference android:key="maxDelayMs"
+                        android:title="Maximum Delay"
+                        android:summary="Maximum delay used by the monitoring process loop"
+                        android:defaultValue="5000"
+                        android:entries="@array/maximumDelayIntervalMs"
+                        android:entryValues="@array/maximumDelayIntervalMsValues"
+                        android:dependency="monitoringEnabled" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
