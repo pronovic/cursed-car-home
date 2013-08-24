@@ -41,11 +41,17 @@ public class CursedCarHomeConfig {
     /** Default value for maxLifetimeMs. */
     public static final String DEFAULT_MAX_LIFETIME_MS = "120000";
 
-    /** Defaulta value for initialDelayMs. */
+    /** Default value for initialDelayMs. */
     public static final String DEFAULT_INITIAL_DELAY_MS = "100";
 
-    /** Defaulta value for maxDelayMs. */
+    /** Default value for maxDelayMs. */
     public static final String DEFAULT_MAX_DELAY_MS = "5000";
+
+    /** Default value for dailyReportEnabled. */
+    public static final boolean DEFAULT_DAILY_REPORT_ENABLED = false;
+
+    /** Default value for dailyReportTime. */
+    public static final String DEFAULT_DAILY_REPORT_TIME = "1100";
 
     /** Whether speakerphone workaround is in enabled. */
     private boolean workaroundEnabled;
@@ -62,6 +68,12 @@ public class CursedCarHomeConfig {
     /** Maximum delay between monitoring process checks, in milliseconds. */
     private int maxDelayMs;
 
+    /** Whether daily reporting is enabled. */
+    private boolean dailyReportEnabled;
+
+    /** Time of day to run the daily report, if enabled. */
+    private String dailyReportTime;
+
     /** Create a empty configuration. */
     public CursedCarHomeConfig() {
     }
@@ -74,6 +86,8 @@ public class CursedCarHomeConfig {
         this.maxLifetimeMs = Integer.parseInt(preferences.getString("maxLifetimeMs", DEFAULT_MAX_LIFETIME_MS));
         this.initialDelayMs = Integer.parseInt(preferences.getString("initialDelayMs", DEFAULT_INITIAL_DELAY_MS));
         this.maxDelayMs = Integer.parseInt(preferences.getString("maxDelayMs", DEFAULT_MAX_DELAY_MS));
+        this.dailyReportEnabled = preferences.getBoolean("dailyReportEnabled", DEFAULT_DAILY_REPORT_ENABLED);
+        this.dailyReportTime = preferences.getString("dailyReportTime", DEFAULT_DAILY_REPORT_TIME);
     }
 
     public boolean getWorkaroundEnabled() {
@@ -116,4 +130,19 @@ public class CursedCarHomeConfig {
         this.maxDelayMs = maxDelayMs;
     }
 
+    public boolean getDailyReportEnabled() {
+        return dailyReportEnabled;
+    }
+
+    public void setDailyReportEnabled(boolean dailyReportEnabled) {
+        this.dailyReportEnabled = dailyReportEnabled;
+    }
+
+    public String getDailyReportTime() {
+        return dailyReportTime;
+    }
+
+    public void setDailyReportTime(String dailyReportTime) {
+        this.dailyReportTime = dailyReportTime;
+    }
 }

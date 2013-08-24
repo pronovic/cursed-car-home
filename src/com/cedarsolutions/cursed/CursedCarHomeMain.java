@@ -23,8 +23,12 @@
 package com.cedarsolutions.cursed;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,12 +36,13 @@ import android.view.MenuItem;
  * This main activity for this application, which manages preferences.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class CursedCarHomeMain extends PreferenceActivity {
+public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.addPreferencesFromResource(R.xml.preferences);
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -55,5 +60,10 @@ public class CursedCarHomeMain extends PreferenceActivity {
         default:
             return false;
         }
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        Log.d("CursedCarHome", "Re-configuring all alarms because configuration changed");
+        AlarmScheduler.configureAllAlarms(this);
     }
 }

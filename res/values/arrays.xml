@@ -51,4 +51,58 @@
         <item name="10000">10000</item>
         <item name="30000">30000</item>
     </string-array>
+
+    <string-array name="timeOfDayHours">
+        <item name="0000">00:00</item>
+        <item name="0100">01:00</item>
+        <item name="0200">02:00</item>
+        <item name="0300">03:00</item>
+        <item name="0400">04:00</item>
+        <item name="0500">05:00</item>
+        <item name="0600">06:00</item>
+        <item name="0700">07:00</item>
+        <item name="0800">08:00</item>
+        <item name="0900">09:00</item>
+        <item name="1000">10:00</item>
+        <item name="1100">11:00</item>
+        <item name="1200">12:00</item>
+        <item name="1300">13:00</item>
+        <item name="1400">14:00</item>
+        <item name="1500">15:00</item>
+        <item name="1600">16:00</item>
+        <item name="1700">17:00</item>
+        <item name="1800">18:00</item>
+        <item name="1900">19:00</item>
+        <item name="2000">20:00</item>
+        <item name="2100">21:00</item>
+        <item name="2200">22:00</item>
+        <item name="2300">23:00</item>
+    </string-array>
+
+    <string-array name="timeOfDayHoursValues">
+        <item name="0000">0000</item>
+        <item name="0100">0100</item>
+        <item name="0200">0200</item>
+        <item name="0300">0300</item>
+        <item name="0400">0400</item>
+        <item name="0500">0500</item>
+        <item name="0600">0600</item>
+        <item name="0700">0700</item>
+        <item name="0800">0800</item>
+        <item name="0900">0900</item>
+        <item name="1000">1000</item>
+        <item name="1100">1100</item>
+        <item name="1200">1200</item>
+        <item name="1300">1300</item>
+        <item name="1400">1400</item>
+        <item name="1500">1500</item>
+        <item name="1600">1600</item>
+        <item name="1700">1700</item>
+        <item name="1800">1800</item>
+        <item name="1900">1900</item>
+        <item name="2000">2000</item>
+        <item name="2100">2100</item>
+        <item name="2200">2200</item>
+        <item name="2300">2300</item>
+    </string-array>
 </resources>

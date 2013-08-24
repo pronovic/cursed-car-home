@@ -22,6 +22,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.cedarsolutions.cursed;
 
+import static com.cedarsolutions.cursed.CursedCarHomeConfig.DEFAULT_DAILY_REPORT_ENABLED;
+import static com.cedarsolutions.cursed.CursedCarHomeConfig.DEFAULT_DAILY_REPORT_TIME;
 import static com.cedarsolutions.cursed.CursedCarHomeConfig.DEFAULT_INITIAL_DELAY_MS;
 import static com.cedarsolutions.cursed.CursedCarHomeConfig.DEFAULT_MAX_DELAY_MS;
 import static com.cedarsolutions.cursed.CursedCarHomeConfig.DEFAULT_MAX_LIFETIME_MS;
@@ -52,6 +54,8 @@ public class EditPreferencesActivity extends Activity {
         builder.append("\n" + sharedPrefs.getString("maxLifetimeMs", DEFAULT_MAX_LIFETIME_MS));
         builder.append("\n" + sharedPrefs.getString("initialDelayMs", DEFAULT_INITIAL_DELAY_MS));
         builder.append("\n" + sharedPrefs.getString("maxDelayMs", DEFAULT_MAX_DELAY_MS));
+        builder.append("\n" + sharedPrefs.getBoolean("dailyReportEnabled", DEFAULT_DAILY_REPORT_ENABLED));
+        builder.append("\n" + sharedPrefs.getString("dailyReportTime", DEFAULT_DAILY_REPORT_TIME));
 
         TextView settingsTextView = (TextView) findViewById(R.id.settings);
         settingsTextView.setText(builder.toString());

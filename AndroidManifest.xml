@@ -7,6 +7,7 @@
     <uses-sdk android:minSdkVersion="10"
               android:targetSdkVersion="10" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
@@ -31,12 +32,21 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        
+
         <receiver android:name=".DockEventReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOCK_EVENT" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".DailyCleanupAlarmReceiver" />
+        <receiver android:name=".DailyReportAlarmReceiver" />
 
         <service android:name=".DockEventCleanupService"
                  android:process=":DockEventCleanupProcess"

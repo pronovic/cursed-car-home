@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    
+
     <PreferenceCategory android:title="Speakerphone Workaround" android:key="speakerphone">
 	    <CheckBoxPreference android:key="workaroundEnabled"
 	                android:title="Enabled"
@@ -37,6 +37,20 @@
                         android:entries="@array/maximumDelayIntervalMs"
                         android:entryValues="@array/maximumDelayIntervalMsValues"
                         android:dependency="monitoringEnabled" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Reporting" android:key="reporting">
+        <CheckBoxPreference android:key="dailyReportEnabled"
+                    android:title="Daily Report Enabled"
+                    android:summary="Enable the daily report"
+                    android:defaultValue="true" />
+        <ListPreference android:key="dailyReportTime"
+                        android:title="Daily Report Time"
+                        android:summary="Time at which to run the daily report"
+                        android:defaultValue="1100"
+                        android:entries="@array/timeOfDayHours"
+                        android:entryValues="@array/timeOfDayHoursValues"
+                        android:dependency="dailyReportEnabled" />
     </PreferenceCategory>
 
 </PreferenceScreen>

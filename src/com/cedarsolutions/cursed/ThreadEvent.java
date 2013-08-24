@@ -22,10 +22,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.cedarsolutions.cursed;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -86,11 +82,11 @@ public class ThreadEvent {
         buffer.append(", ");
 
         buffer.append("startTime=");
-        buffer.append(formatIso8601(this.getStartTime()));
+        buffer.append(DateUtils.formatIso8601(this.getStartTime()));
         buffer.append(", ");
 
         buffer.append("stopTime=");
-        buffer.append(formatIso8601(this.getStopTime()));
+        buffer.append(DateUtils.formatIso8601(this.getStopTime()));
         buffer.append(", ");
 
         buffer.append("disableAttempts=");
@@ -102,14 +98,6 @@ public class ThreadEvent {
         buffer.append(")");
 
         return buffer.toString();
-    }
-
-    /** Format a timestamp as an ISO 8601 date. */
-    public static String formatIso8601(long timestamp) {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS'Z'", Locale.US);
-        df.setTimeZone(tz);
-        return df.format(new Date(timestamp));
     }
 
     /** Event identifier. */
