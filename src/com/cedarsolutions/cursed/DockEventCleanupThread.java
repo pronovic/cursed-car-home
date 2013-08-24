@@ -34,6 +34,12 @@ import android.util.Log;
  */
 public class DockEventCleanupThread implements Runnable {
 
+    /** Number of nanoseconds per millisecond. */
+    private static final long NANOSECONDS_PER_MILLISECOND = 1000000;
+
+    /** Thread event tied to this thread. */
+    private ThreadEvent event;
+
     /** Parent service associated with this thread. */
     private DockEventCleanupService parent;
 
@@ -45,6 +51,7 @@ public class DockEventCleanupThread implements Runnable {
 
     /** Constructor. */
     private DockEventCleanupThread(DockEventCleanupService parent, Context context, CursedCarHomeConfig config) {
+        this.event = new ThreadEvent();
         this.parent = parent;
         this.context = context;
         this.config = config;
@@ -80,7 +87,10 @@ public class DockEventCleanupThread implements Runnable {
             Log.d("CursedCarHome", "DockEventCleanupThread: CarHome monitoring is not enabled");
         } else {
             Log.d("CursedCarHome", "DockEventCleanupThread: CarHome monitoring is enabled");
+            this.event.markStart();
             this.watchForAWhile();
+            this.event.markStop();
+            this.logEvent();
         }
 
         Log.d("CursedCarHome", "DockEventCleanupThread: stopping parent");
@@ -92,8 +102,8 @@ public class DockEventCleanupThread implements Runnable {
     /** Watch the system for a while, cleaning up CarHome if it rears its ugly head. */
     private void watchForAWhile() {
         int delay = this.config.getInitialDelayMs();
-        long stopTime = System.currentTimeMillis() + this.config.getMaxLifetimeMs();
-        while (System.currentTimeMillis() <= stopTime) {
+        long limit = System.nanoTime() + (this.config.getMaxLifetimeMs() * NANOSECONDS_PER_MILLISECOND);
+        while (System.nanoTime() <= limit) {
             this.disableCarModeIfNecessary();
             forceStopCarHomeApp();
             delay = delay * 2 >= this.config.getMaxDelayMs() ? this.config.getMaxDelayMs() : delay * 2;
@@ -112,14 +122,17 @@ public class DockEventCleanupThread implements Runnable {
         if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_CAR) {
             Log.d("CursedCarHome", "DockEventCleanupThread: UI mode was set to car, disabling now");
             uiModeManager.disableCarMode(0);
+            this.event.markDisableAttempt();
         }
     }
 
     /** Try to force-stop the CarHome application, if it's running. */
     private void forceStopCarHomeApp() {
         try {
+            Log.d("CursedCarHome", "DockEventCleanupThread: killing background packages for \"com.google.android.carhome\" package");
             ActivityManager activityManager = (ActivityManager) this.getContext().getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.killBackgroundProcesses("com.google.android.carhome");  // requires KILL_BACKGROUND_PROCESSES
+            this.event.markKillAttempt();
         } catch (Exception e) { }
     }
 
@@ -133,6 +146,12 @@ public class DockEventCleanupThread implements Runnable {
     /** Get a reference to the UIModeManager from the application context. */
     private UiModeManager getUiModeManager() {
         return (UiModeManager) this.getContext().getSystemService(Context.UI_MODE_SERVICE);
+    }
+
+    /** Log the thread event to the database. */
+    private void logEvent() {
+        EventDatabase database = new EventDatabase(this.getContext());
+        database.insertEvent(this.event);
     }
 
 }
