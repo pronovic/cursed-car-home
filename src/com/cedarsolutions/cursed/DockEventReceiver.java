@@ -39,7 +39,7 @@ public class DockEventReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "DockEventReceiver.onReceive() got DOCK_EVENT intent");
+        Log.d("CursedCarHome", "DockEventReceiver got DOCK_EVENT intent");
         Intent service = new Intent(context, DockEventCleanupService.class);
         context.startService(service);
     }

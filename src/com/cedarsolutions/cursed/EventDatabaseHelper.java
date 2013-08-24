@@ -47,14 +47,14 @@ public class EventDatabaseHelper extends SQLiteOpenHelper {
     /** Create the database. */
     @Override
     public void onCreate(SQLiteDatabase database) {
-        Log.w("EventDatabaseHelper", "Creating event database.");
+        Log.w("CursedCarHome", "EventDatabaseHelper.onCreate(): creating event database.");
         database.execSQL(buildCreateSql());
     }
 
     /** Upgrade the database. */
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        Log.w("EventDatabaseHelper", "Upgrading to new version of event database, which will destroy old data.");
+        Log.w("CursedCarHome", "EventDatabaseHelper.onUpgrade(): upgrading to new version of event database, which will destroy old data.");
         database.execSQL(buildDropTableSql());
         onCreate(database);
     }

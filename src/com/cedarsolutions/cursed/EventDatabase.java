@@ -52,9 +52,9 @@ public class EventDatabase {
         values.put("kill_attempts", event.getKillAttempts());
         long result = this.database.insert("event", null, values);
         if (result == -1) {
-            Log.e("EventDatabase", "Failed to insert: " + event.toString());
+            Log.e("CursedCarHome", "EventDatabase.insertEvent(): failed to insert: " + event.toString());
         } else {
-            Log.i("EventDatabase", "Inserted: " + event.toString());
+            Log.i("CursedCarHome", "EventDatabase.insertEvent(): inserted: " + event.toString());
         }
     }
 

@@ -35,7 +35,7 @@ public class DockEventCleanupService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("CursedCarHome", "DockEventCleanupService.onStart()");
+        Log.d("CursedCarHome", "DockEventCleanupService started");
         DockEventCleanupThread.startCleanupThread(this, this.getApplicationContext());
         return Service.START_NOT_STICKY;  // it's ok for the system to kill it
     }
