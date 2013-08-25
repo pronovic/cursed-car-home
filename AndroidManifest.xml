@@ -53,6 +53,11 @@
                  android:icon="@drawable/cch"
                  android:label="@string/service" />
 
+        <service android:name=".DailyCleanupService"
+                 android:process=":DailyCleanupProcess"
+                 android:icon="@drawable/cch"
+                 android:label="@string/service" />
+        
         <service android:name=".DailyReportService"
                  android:process=":DailyReportProcess"
                  android:icon="@drawable/cch"

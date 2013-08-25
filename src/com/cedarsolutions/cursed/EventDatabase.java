@@ -64,6 +64,13 @@ public class EventDatabase {
         }
     }
 
+    /** Delete old data. */
+    public void deleteOldData() {
+        long limit = generateDeleteLimit();
+        Log.d("CursedCarHome", "EventDatabase: deleting data older than 1 month (<= " + DateUtils.formatIso8601(limit) + ")");
+        this.database.delete("event", "thread_start <= ?", new String[] { Long.toString(limit), });
+    }
+
     /** Create the daily report. */
     public DockCleanupReport createDockCleanupReport() {
         DateRange range = generateDateRange();
@@ -72,6 +79,8 @@ public class EventDatabase {
         DockCleanupReport report = new DockCleanupReport();
         report.setReportStart(DateUtils.formatIso8601(range.start));
         report.setReportEnd(DateUtils.formatIso8601(range.end));
+        Log.d("CursedCarHome", "EventDatabase: report start is " + report.getReportStart());
+        Log.d("CursedCarHome", "EventDatabase: report end is " + report.getReportEnd());
 
         this.fillDisableAttempts(report, range.start, range.end);
         this.fillStartTimes(report, range.start, range.end);
@@ -142,6 +151,13 @@ public class EventDatabase {
         range.start = calendar.getTime().getTime();
 
         return range;
+    }
+
+    /** Generate a limit that defines data older than 5 weeks. */
+    private static long generateDeleteLimit() {
+        Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
+        return calendar.getTime().getTime();
     }
 
 }

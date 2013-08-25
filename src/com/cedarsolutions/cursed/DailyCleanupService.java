@@ -36,7 +36,8 @@ public class DailyCleanupService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("CursedCarHome", "DailyCleanupService started");
-        DailyCleanupThread.startThread(this, this.getApplicationContext());
+        EventDatabase database = new EventDatabase(this);
+        database.deleteOldData();
         return Service.START_NOT_STICKY;  // it's ok for the system to kill it
     }
 
