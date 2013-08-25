@@ -55,7 +55,7 @@ public class DateUtilsTest {
     /** Test formatIso8601(). */
     @Test public void testFormatIso8601() {
         Date date = DateUtils.createUtcDate(2013, 8, 24, 13, 5, 26, 444);
-        assertEquals("2013-08-24T13:05:26,444Z", DateUtils.formatIso8601(date));
+        assertEquals("2013-08-24T13:05:26,444Z", DateUtils.formatIso8601Utc(date));
     }
 
     /** Test getUtcTime(). */
@@ -147,7 +147,7 @@ public class DateUtilsTest {
 
     /** Assert that getNextOccurrence() works. */
     private static void assertGetNextOccurrenceWorks(String timestamp, Date now, String time) {
-        assertEquals(timestamp, DateUtils.formatIso8601(DateUtils.getNextOccurrence(time, now)));
+        assertEquals(timestamp, DateUtils.formatIso8601Utc(DateUtils.getNextUtcOccurrence(time, now)));
     }
 
 }

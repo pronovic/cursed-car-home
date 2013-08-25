@@ -82,11 +82,11 @@ public class DockCleanupEvent {
         buffer.append(", ");
 
         buffer.append("startTime=");
-        buffer.append(DateUtils.formatIso8601(this.getStartTime()));
+        buffer.append(DateUtils.formatIso8601Utc(this.getStartTime()));
         buffer.append(", ");
 
         buffer.append("stopTime=");
-        buffer.append(DateUtils.formatIso8601(this.getStopTime()));
+        buffer.append(DateUtils.formatIso8601Utc(this.getStopTime()));
         buffer.append(", ");
 
         buffer.append("disableAttempts=");

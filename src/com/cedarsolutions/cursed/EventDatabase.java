@@ -67,7 +67,7 @@ public class EventDatabase {
     /** Delete old data. */
     public void deleteOldData() {
         long limit = generateDeleteLimit();
-        Log.d("CursedCarHome", "EventDatabase: deleting data older than 1 month (<= " + DateUtils.formatIso8601(limit) + ")");
+        Log.d("CursedCarHome", "EventDatabase: deleting data older than 1 month (<= " + DateUtils.formatIso8601Utc(limit) + ")");
         this.database.delete("event", "thread_start <= ?", new String[] { Long.toString(limit), });
     }
 
@@ -119,7 +119,7 @@ public class EventDatabase {
             String sql = "select thread_start from event where thread_start between ? and ?";
             c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
             while (c.moveToNext()) {
-                String startTime = DateUtils.formatIso8601(Long.parseLong(c.getString(0)));
+                String startTime = DateUtils.formatIso8601Utc(Long.parseLong(c.getString(0)));
                 report.getStartTimes().add(startTime);
                 Log.d("CursedCarHome", "EventDatabase: added start time = " + startTime);
             }

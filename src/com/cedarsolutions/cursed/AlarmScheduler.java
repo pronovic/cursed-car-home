@@ -45,7 +45,7 @@ public class AlarmScheduler {
     /** Configure the alarm for the daily cleanup job. */
     private static void configureDailyCleanupAlarm(Context context) {
         cancelAlarm(context, DailyCleanupAlarmReceiver.class, "Daily cleanup alarm");
-        scheduleDailyAlarm(context, "0005", DailyCleanupAlarmReceiver.class, "Daily cleanup alarm");
+        scheduleDailyAlarmUtc(context, "0005", DailyCleanupAlarmReceiver.class, "Daily cleanup alarm");
     }
 
     /** Configure the alarm for the daily report job. */
@@ -53,7 +53,7 @@ public class AlarmScheduler {
         CursedCarHomeConfig config = new CursedCarHomeConfig(context);
         cancelAlarm(context, DailyReportAlarmReceiver.class, "Daily report alarm");
         if (config.getDailyReportEnabled()) {
-            scheduleDailyAlarm(context, config.getDailyReportTime(), DailyReportAlarmReceiver.class, "Daily report alarm");
+            scheduleDailyAlarmLocal(context, config.getDailyReportTime(), DailyReportAlarmReceiver.class, "Daily report alarm");
         } else {
             Log.d("CursedCarHome", "AlarmScheduler: daily report alarm not enabled");
         }
@@ -68,8 +68,18 @@ public class AlarmScheduler {
         Log.d("CursedCarHome", "AlarmScheduler: canceled alarm [" + alarmName + "]");
     }
 
-    /** Schedule a daily alarm for a particular class. */
-    private static void scheduleDailyAlarm(Context context, String timeOfday, Class<?> alarmClass, String alarmName) {
+    /** Schedule a daily alarm for a particular class, in UTC. */
+    private static void scheduleDailyAlarmUtc(Context context, String timeOfday, Class<?> alarmClass, String alarmName) {
+        Date scheduledTime = DateUtils.getNextUtcOccurrence(timeOfday);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, alarmClass);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, scheduledTime.getTime(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.d("CursedCarHome", "AlarmScheduler: scheduled alarm [" + alarmName + "] starting " + DateUtils.formatIso8601Utc(scheduledTime));
+    }
+
+    /** Schedule a daily alarm for a particular class, in local. */
+    private static void scheduleDailyAlarmLocal(Context context, String timeOfday, Class<?> alarmClass, String alarmName) {
         Date scheduledTime = DateUtils.getNextOccurrence(timeOfday);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, alarmClass);
