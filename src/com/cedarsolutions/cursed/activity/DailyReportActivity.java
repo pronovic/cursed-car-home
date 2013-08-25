@@ -26,9 +26,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.cedarsolutions.cursed.R;
 import com.cedarsolutions.cursed.database.DockCleanupDatabase;
 import com.cedarsolutions.cursed.database.DockCleanupReport;
 
@@ -38,11 +38,37 @@ import com.cedarsolutions.cursed.database.DockCleanupReport;
  */
 public class DailyReportActivity extends Activity {
 
+    /** Menu item identifiers. */
+    private static final int REFRESH_MENU = 0;
+
     /** Called when the activity is starting. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.refreshReportDisplay();
+    }
 
+    /** Initialize the contents of the Activity's standard options menu. */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, REFRESH_MENU, 0, "Refresh");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /** Called whenever an item in your options menu is selected. */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case REFRESH_MENU:
+            this.refreshReportDisplay();
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /** Refresh the report display. */
+    private void refreshReportDisplay() {
         DockCleanupDatabase database = new DockCleanupDatabase(this);
         DockCleanupReport report = database.createDailyDockCleanupReport();
         String reportHtml = generateReportHtml(report);
@@ -50,14 +76,6 @@ public class DailyReportActivity extends Activity {
         TextView textView = new TextView(this);
         textView.setText(Html.fromHtml(reportHtml));
         setContentView(textView);
-    }
-
-    /** Initialize the contents of the Activity's standard options menu. */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.daily_report, menu);
-        return true;
     }
 
     /** Generate HTML text based on a DockCleanupReport. */
