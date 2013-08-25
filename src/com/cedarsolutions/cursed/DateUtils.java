@@ -140,7 +140,7 @@ public class DateUtils {
      * @return Java date for the next occurrence
      */
     public static Date getNextOccurrence(String time) {
-        return getNextUtcOccurrence(time, new Date());
+        return getNextOccurrence(time, new Date());
     }
 
     /**
@@ -162,7 +162,7 @@ public class DateUtils {
         calendar.setTime(now);
 
         int timeDesired = Integer.parseInt(time);
-        int timeNow = Integer.parseInt(getUtcTime(calendar.getTime().getTime()));
+        int timeNow = Integer.parseInt(getTime(calendar.getTime().getTime()));
 
         int hour = Integer.parseInt(time.substring(0, 2).replaceFirst("^0", ""));
         int minute = Integer.parseInt(time.substring(2, 4).replaceFirst("^0", ""));
