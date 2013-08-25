@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.cedarsolutions.cursed.database.DockCleanupDatabase;
 import com.cedarsolutions.cursed.database.DockCleanupReport;
+import com.cedarsolutions.cursed.database.SpeakerphoneCleanupDatabase;
+import com.cedarsolutions.cursed.database.SpeakerphoneCleanupReport;
 
 /**
  * Activity that displays the daily report.
@@ -69,9 +71,13 @@ public class DailyReportActivity extends Activity {
 
     /** Refresh the report display. */
     private void refreshReportDisplay() {
-        DockCleanupDatabase database = new DockCleanupDatabase(this);
-        DockCleanupReport report = database.createDailyDockCleanupReport();
-        String reportHtml = generateReportHtml(report);
+        DockCleanupDatabase dockCleanupDatabase = new DockCleanupDatabase(this);
+        DockCleanupReport dockCleanupReport = dockCleanupDatabase.createDailyDockCleanupReport();
+
+        SpeakerphoneCleanupDatabase speakerphoneCleanupDatabase = new SpeakerphoneCleanupDatabase(this);
+        SpeakerphoneCleanupReport speakerphoneCleanupReport = speakerphoneCleanupDatabase.createDailySpeakerphoneCleanupReport();
+
+        String reportHtml = generateReportHtml(dockCleanupReport, speakerphoneCleanupReport);
 
         TextView textView = new TextView(this);
         textView.setText(Html.fromHtml(reportHtml));
@@ -79,7 +85,7 @@ public class DailyReportActivity extends Activity {
     }
 
     /** Generate HTML text based on a DockCleanupReport. */
-    private static String generateReportHtml(DockCleanupReport report) {
+    private static String generateReportHtml(DockCleanupReport dockCleanupReport, SpeakerphoneCleanupReport speakerphoneCleanupReport) {
         StringBuffer html = new StringBuffer();
 
         html.append("<html>\n");
@@ -88,44 +94,68 @@ public class DailyReportActivity extends Activity {
 
         html.append("<p>\n");
         html.append("This report provides a summary of the docking events\n");
-        html.append("that CursedCarHome has handled over the past 24 hours.\n");
+        html.append("that CursedCarHome has handled over the past 24 hours,\n");
+        html.append("as well as the number of times that CursedCarHome has\n");
+        html.append("proactively disabled the spreakerphone.\n");
         html.append("</p>\n");
 
         html.append("<h3>Summary</h3>\n");
 
         html.append("<b>Report start: </b>");
-        html.append(report.getReportStart());
+        html.append(dockCleanupReport.getReportStart());
         html.append("<br/>\n");
 
         html.append("<b>Report end: </b>");
-        html.append(report.getReportEnd());
+        html.append(dockCleanupReport.getReportEnd());
         html.append("<br/>\n");
 
         html.append("<b>Spurious dock events: </b>");
-        html.append(report.getEventsHandled());
-        if (report.getEventsHandled() == 1) {
+        html.append(dockCleanupReport.getEventsHandled());
+        if (dockCleanupReport.getEventsHandled() == 1) {
             html.append(" event<br/>\n");
         } else {
             html.append(" events<br/>\n");
         }
 
         html.append("<b>Disabled dock mode: </b>");
-        html.append(report.getDisableAttempts());
-        if (report.getDisableAttempts() == 1) {
+        html.append(dockCleanupReport.getDisableAttempts());
+        if (dockCleanupReport.getDisableAttempts() == 1) {
             html.append(" time<br/>\n");
         } else {
             html.append(" times<br/>\n");
         }
 
-        if (!report.getStartTimes().isEmpty()) {
-            html.append("<h3>Events</h3>\n");
+        html.append("<b>Disabled speakerphone: </b>");
+        html.append(speakerphoneCleanupReport.getEventsHandled());
+        if (dockCleanupReport.getEventsHandled() == 1) {
+            html.append(" time<br/>\n");
+        } else {
+            html.append(" times<br/>\n");
+        }
+
+        if (!dockCleanupReport.getStartTimes().isEmpty()) {
+            html.append("<h3>Dock Cleanup Events</h3>\n");
 
             int index = 1;
-            for (String startTime : report.getStartTimes()) {
+            for (String startTime : dockCleanupReport.getStartTimes()) {
                 html.append("<b>Event ");
                 html.append(index);
                 html.append(": </b> ");
                 html.append(startTime);
+                html.append("<br/>\n");
+                index += 1;
+            }
+        }
+
+        if (!speakerphoneCleanupReport.getTimestamps().isEmpty()) {
+            html.append("<h3>Speakerphone Cleanup Events</h3>\n");
+
+            int index = 1;
+            for (String timestamp : speakerphoneCleanupReport.getTimestamps()) {
+                html.append("<b>Event ");
+                html.append(index);
+                html.append(": </b> ");
+                html.append(timestamp);
                 html.append("<br/>\n");
                 index += 1;
             }

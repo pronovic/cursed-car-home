@@ -32,32 +32,29 @@ import com.cedarsolutions.cursed.util.AndroidLogger;
 import com.cedarsolutions.cursed.util.DateUtils;
 
 /**
- * Provides operations on the dock cleanup event database.
+ * Provides operations on the speakerphone cleanup event database.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DockCleanupDatabase {
+public class SpeakerphoneCleanupDatabase {
 
     /** Logger instance. */
-    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DockCleanupDatabase.class);
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(SpeakerphoneCleanupDatabase.class);
 
     /** Underlying SQLite database. */
     private SQLiteDatabase database;
 
     /** Create a database. */
-    public DockCleanupDatabase(Context context) {
-        DockCleanupDatabaseHelper helper = new DockCleanupDatabaseHelper(context);
+    public SpeakerphoneCleanupDatabase(Context context) {
+        SpeakerphoneCleanupDatabaseHelper helper = new SpeakerphoneCleanupDatabaseHelper(context);
         this.database = helper.getWritableDatabase();
     }
 
     /** Insert an event into the database. */
-    public void insertEvent(DockCleanupEvent event) {
+    public void insertEvent(SpeakerphoneCleanupEvent event) {
         ContentValues values = new ContentValues();
         values.put("id", event.getId());
-        values.put("thread_start", event.getStartTime());
-        values.put("thread_stop", event.getStopTime());
-        values.put("disable_attempts", event.getDisableAttempts());
-        values.put("kill_attempts", event.getKillAttempts());
-        long result = this.database.insert("dock_cleanup_events", null, values);
+        values.put("timestamp", event.getTimestamp());
+        long result = this.database.insert("speakerphone_cleanup_events", null, values);
         if (result == -1) {
             LOGGER.error("Failed to insert: " + event.toString());
         } else {
@@ -69,66 +66,43 @@ public class DockCleanupDatabase {
     public void purgeOldData() {
         long limit = DateRangeUtils.generatePurgeLimit();
         LOGGER.debug("Deleting data older than 1 month (<= " + DateUtils.formatIso8601Utc(limit) + ")");
-        this.database.delete("dock_cleanup_events", "thread_start <= ?", new String[] { Long.toString(limit), });
+        this.database.delete("speakerphone_cleanup_events", "timestamp <= ?", new String[] { Long.toString(limit), });
     }
 
-    /** Create a DockCleanupReport covering the last 24 hours. */
-    public DockCleanupReport createDailyDockCleanupReport() {
-        LOGGER.debug("Creating dock cleanup report.");
+    /** Create a SpeakerphoneCleanupReport covering the last 24 hours. */
+    public SpeakerphoneCleanupReport createDailySpeakerphoneCleanupReport() {
+        LOGGER.debug("Creating speakerphone cleanup report.");
 
         DateRange range = DateRangeUtils.generateDailyRange();
         LOGGER.debug("Using date range \"between " + range.getStart() + " and " + range.getEnd() + "\" for query");
 
-        DockCleanupReport report = new DockCleanupReport();
+        SpeakerphoneCleanupReport report = new SpeakerphoneCleanupReport();
         report.setReportStart(DateUtils.formatIso8601(range.getStart()));
         report.setReportEnd(DateUtils.formatIso8601(range.getEnd()));
         LOGGER.debug("Report start is " + report.getReportStart());
         LOGGER.debug("Report end is " + report.getReportEnd());
 
-        this.fillDisableAttempts(report, range.getStart(), range.getEnd());
-        this.fillStartTimes(report, range.getStart(), range.getEnd());
-        report.setEventsHandled(report.getStartTimes().size());
+        this.fillTimestamps(report, range.getStart(), range.getEnd());
+        report.setEventsHandled(report.getTimestamps().size());
 
         return report;
     }
 
-    /** Fill disable attempts into a report. */
-    private void fillDisableAttempts(DockCleanupReport report, long start, long end) {
+    /** Fill timestamps into a report. */
+    private void fillTimestamps(SpeakerphoneCleanupReport report, long start, long end) {
         Cursor c = null;
 
         try {
-            String sql = "select coalesce(sum(disable_attempts), 0) from dock_cleanup_events where thread_start between ? and ?";
-            c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
-            c.moveToFirst();
-            int disableAttempts = Integer.parseInt(c.getString(0));
-            report.setDisableAttempts(disableAttempts);
-            LOGGER.debug("Retrieved disableAttempts = " + report.getDisableAttempts());
-        } catch (Exception e) {
-            LOGGER.error("Failed to retrieve disable attempts: " + e.getMessage());
-            report.setDisableAttempts(0);
-        } finally {
-            if (c != null) {
-                c.close();
-                c = null;
-            }
-        }
-    }
-
-    /** Fill start times into a report. */
-    private void fillStartTimes(DockCleanupReport report, long start, long end) {
-        Cursor c = null;
-
-        try {
-            String sql = "select thread_start from dock_cleanup_events where thread_start between ? and ?";
+            String sql = "select timestamp from speakerphone_cleanup_events where timestamp between ? and ?";
             c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
             while (c.moveToNext()) {
                 String startTime = DateUtils.formatIso8601Utc(Long.parseLong(c.getString(0)));
-                report.getStartTimes().add(startTime);
-                LOGGER.debug("Added start time = " + startTime);
+                report.getTimestamps().add(startTime);
+                LOGGER.debug("Added timestamp = " + startTime);
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to retrieve start times: " + e.getMessage());
-            report.getStartTimes().clear();
+            LOGGER.error("Failed to retrieve timestamps: " + e.getMessage());
+            report.getTimestamps().clear();
         } finally {
             if (c != null) {
                 c.close();

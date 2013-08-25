@@ -77,7 +77,7 @@ public class DockCleanupEvent {
     public String toString() {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("event(");
+        buffer.append("DockCleanupEvent(");
 
         buffer.append("id=");
         buffer.append(this.getId());

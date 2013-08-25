@@ -30,6 +30,8 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 
 import com.cedarsolutions.cursed.config.CursedCarHomeConfig;
+import com.cedarsolutions.cursed.database.SpeakerphoneCleanupDatabase;
+import com.cedarsolutions.cursed.database.SpeakerphoneCleanupEvent;
 import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
@@ -53,6 +55,7 @@ public class PhoneCallEventReceiver extends BroadcastReceiver {
                 CursedCarHomeConfig config = new CursedCarHomeConfig(context);
                 if (config.getWorkaroundEnabled()) {
                     LOGGER.debug("Speakerphone monitoring is enabled, will disable speakerphone");
+                    this.logEvent(context);
                     disableSpeakerphone(context);
                 } else {
                     LOGGER.debug("Speakerphone monitoring is NOT enabled, ignoring event");
@@ -63,6 +66,12 @@ public class PhoneCallEventReceiver extends BroadcastReceiver {
         } else {
             LOGGER.debug("Ignoring event with no extras");
         }
+    }
+
+    /** Log an event, showing that speakerphone cleanup occurred. */
+    private void logEvent(Context context) {
+        SpeakerphoneCleanupDatabase database = new SpeakerphoneCleanupDatabase(context);
+        database.insertEvent(new SpeakerphoneCleanupEvent());
     }
 
     /** Disable the speakerphone. */
