@@ -36,14 +36,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     /** Handle the BOOT_COMPLETED intent. */
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        // Note that in the emulator, the application which receives this event
-        // is the old application (the one that was previously installed), not
-        // the new one that you're trying to test.  You need to manually go in
-        // and change configuration to trigger the alarms in the emulator.
-        // (Incidentally, the same is true when installing the app for the first
-        // time... none of the alarms will run until the app has been configured.)
-
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
             Log.d("CursedCarHome", "BootCompletedReceiver got BOOT_COMPLETED intent");
             AlarmScheduler.configureAllAlarms(context);

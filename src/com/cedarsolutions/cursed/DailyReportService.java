@@ -53,7 +53,7 @@ public class DailyReportService  extends Service {
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.cch, "Cursed Car Home Daily Report", System.currentTimeMillis());
         CharSequence contentTitle = "Cursed Car Home Daily Report";
-        CharSequence contentText = "Daily report is ready.";
+        CharSequence contentText = "Daily report is ready";
         Intent notificationIntent = new Intent(this, DailyReportActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, contentTitle, contentText, contentIntent);

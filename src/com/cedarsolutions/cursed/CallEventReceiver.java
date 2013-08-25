@@ -39,7 +39,7 @@ public class CallEventReceiver extends BroadcastReceiver {
     /** Receive events. */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "CallEventReceiver received intent to handle");
+        Log.d("CursedCarHome", "CallEventReceiver received an intent");
         Bundle extras = intent.getExtras();
         if (extras != null) {
             String state = extras.getString(TelephonyManager.EXTRA_STATE);
