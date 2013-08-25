@@ -13,10 +13,10 @@
 
     <application android:allowBackup="true"
                  android:icon="@drawable/cch"
-                 android:label="CursedCarHome"
+                 android:label="Cursed Car Home"
                  android:theme="@style/AppTheme" >
 
-        <activity android:name=".activity.CursedCarHomeMain" android:label="CursedCarHome">
+        <activity android:name=".activity.CursedCarHomeMain" android:label="Cursed Car Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
