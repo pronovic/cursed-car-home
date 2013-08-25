@@ -44,6 +44,12 @@ public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPre
     /** Logger instance. */
     private static final AndroidLogger LOGGER = AndroidLogger.getLogger(CursedCarHomeMain.class);
 
+    /** Menu item identifiers. */
+    private static final int SETTINGS_MENU = 0;
+
+    /** Menu item identifiers. */
+    private static final int REPORT_MENU = 1;
+
     /** Called when the activity is starting. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +61,8 @@ public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPre
     /** Initialize the contents of the Activity's standard options menu. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 0, 0, "Show current settings");
+        menu.add(Menu.NONE, SETTINGS_MENU, 0, "Show current settings");
+        menu.add(Menu.NONE, REPORT_MENU, 1, "Run daily report");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -63,8 +70,11 @@ public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPre
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case 0:
+        case SETTINGS_MENU:
             this.startActivity(new Intent(this, EditPreferencesActivity.class));
+            return true;
+        case REPORT_MENU:
+            this.startActivity(new Intent(this, DailyReportActivity.class));
             return true;
         default:
             return false;
