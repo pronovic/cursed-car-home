@@ -62,8 +62,7 @@ public class AlarmScheduler {
         cancelAlarm(context, DailyReportReceiver.class, "Daily report alarm");
         if (config.getDailyReportEnabled() && config.getDailyReportTime() != null) {
             LOGGER.debug("Daily report time is [" + config.getDailyReportTime() + "]");
-            //scheduleDailyAlarmLocal(context, config.getDailyReportTime(), DailyReportReceiver.class, "Daily report alarm");
-            scheduleDailyAlarmLocal(context, "0041", DailyReportReceiver.class, "Daily report alarm");
+            scheduleDailyAlarmLocal(context, config.getDailyReportTime(), DailyReportReceiver.class, "Daily report alarm");
         } else {
             LOGGER.debug("Daily report alarm not enabled");
         }
