@@ -53,7 +53,7 @@
     </string-array>
 
     <string-array name="timeOfDayHours">
-        <item name="0000">00:00</item>
+        <item name="0000">00:00 (midnight)</item>
         <item name="0100">01:00</item>
         <item name="0200">02:00</item>
         <item name="0300">03:00</item>
@@ -65,7 +65,7 @@
         <item name="0900">09:00</item>
         <item name="1000">10:00</item>
         <item name="1100">11:00</item>
-        <item name="1200">12:00</item>
+        <item name="1200">12:00 (noon)</item>
         <item name="1300">13:00</item>
         <item name="1400">14:00</item>
         <item name="1500">15:00</item>
