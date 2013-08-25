@@ -32,6 +32,8 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import com.cedarsolutions.cursed.util.DateUtils;
+
 /**
  * Unit tests for DateUtils.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>

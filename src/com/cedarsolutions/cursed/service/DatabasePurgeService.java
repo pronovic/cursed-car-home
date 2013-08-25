@@ -20,33 +20,41 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.database.DockCleanupDatabase;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * Service that cleans up after CarHome via CarHomeCleanupThread.
+ * Service that purges old data from the database.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DockEventCleanupService extends Service {
+public class DatabasePurgeService extends Service {
 
-    private boolean started = false;
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DatabasePurgeService.class);
 
+    /** Called by the system every time a client explicitly starts the service. */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!started) {
-            Log.d("CursedCarHome", "DockEventCleanupService started");
-            DockEventCleanupThread.startThread(this, this.getApplicationContext());
-            started = true;
-        } else {
-            Log.d("CursedCarHome", "DockEventCleanupService was already started, no-op");
-        }
+        LOGGER.debug("DatabasePurgeService started");
+        DockCleanupDatabase database = new DockCleanupDatabase(this);
+        database.purgeOldData();
         return Service.START_NOT_STICKY;  // it's ok for the system to kill it
     }
 
+    /** Called by the system to notify a Service that it is no longer used and is being removed. */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LOGGER.debug("DatabasePurgeService destroyed");
+    }
+
+    /** Return the communication channel to the service. */
     @Override
     public IBinder onBind(Intent intent) {
         return null;

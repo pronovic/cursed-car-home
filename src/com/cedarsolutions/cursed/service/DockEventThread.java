@@ -20,28 +20,33 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.service;
 
+import static com.cedarsolutions.cursed.util.DateUtils.convertMillisecondsToNanoseconds;
 import android.app.ActivityManager;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.config.CursedCarHomeConfig;
+import com.cedarsolutions.cursed.database.DockCleanupDatabase;
+import com.cedarsolutions.cursed.database.DockCleanupEvent;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
  * Thread that cleans up after Car Home.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DockEventCleanupThread implements Runnable {
+public class DockEventThread implements Runnable {
 
-    /** Number of nanoseconds per millisecond. */
-    private static final long NANOSECONDS_PER_MILLISECOND = 1000000;
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DockEventThread.class);
 
-    /** Thread event tied to this thread. */
+    /** Dock cleanup event tied to this thread. */
     private DockCleanupEvent event;
 
     /** Parent service associated with this thread. */
-    private DockEventCleanupService parent;
+    private DockEventService parent;
 
     /** Application context associated with parent. */
     private Context context;
@@ -50,7 +55,7 @@ public class DockEventCleanupThread implements Runnable {
     private CursedCarHomeConfig config;
 
     /** Constructor. */
-    private DockEventCleanupThread(DockEventCleanupService parent, Context context, CursedCarHomeConfig config) {
+    private DockEventThread(DockEventService parent, Context context, CursedCarHomeConfig config) {
         this.event = new DockCleanupEvent();
         this.parent = parent;
         this.context = context;
@@ -58,14 +63,14 @@ public class DockEventCleanupThread implements Runnable {
     }
 
     /** Start a new thread. */
-    protected static void startThread(DockEventCleanupService parent, Context context) {
+    protected static void startThread(DockEventService parent, Context context) {
         CursedCarHomeConfig config = new CursedCarHomeConfig(context);
-        DockEventCleanupThread thread = new DockEventCleanupThread(parent, context, config);
+        DockEventThread thread = new DockEventThread(parent, context, config);
         new Thread(thread).start();
     }
 
     /** Get the parent service associated with this thread. */
-    public DockEventCleanupService getParent() {
+    public DockEventService getParent() {
         return parent;
     }
 
@@ -80,29 +85,38 @@ public class DockEventCleanupThread implements Runnable {
     }
 
     /** Thread main routine. */
+    @Override
     public void run() {
-        Log.d("CursedCarHome", "DockEventCleanupThread: starting");
+        LOGGER.debug("DockEventCleanupThread starting");
 
-        if (!this.config.getMonitoringEnabled()) {
-            Log.d("CursedCarHome", "DockEventCleanupThread: CarHome monitoring is not enabled");
+        if (isEnabled(this.getConfig())) {
+            LOGGER.debug("Monitoring is not enabled");
         } else {
-            Log.d("CursedCarHome", "DockEventCleanupThread: CarHome monitoring is enabled");
+            LOGGER.debug("Monitoring is enabled");
             this.event.markStart();
             this.watchForAWhile();
             this.event.markStop();
             this.logEvent();
         }
 
-        Log.d("CursedCarHome", "DockEventCleanupThread: stopping parent");
         this.stopParent();
+        LOGGER.debug("DockEventCleanupThread completed");
+    }
 
-        Log.d("CursedCarHome", "DockEventCleanupThread: completed");
+    /** Whether monitoring is enabled. */
+    private static boolean isEnabled(CursedCarHomeConfig config) {
+        // The config screen doesn't allow the user to set zeroes, so if any
+        // are set, it's not configured.  Treat that as disabled.
+        return (!config.getMonitoringEnabled()) ||
+               config.getInitialDelayMs() == 0 ||
+               config.getMaxDelayMs() == 0 ||
+               config.getMaxLifetimeMs() == 0;
     }
 
     /** Watch the system for a while, cleaning up CarHome if it rears its ugly head. */
     private void watchForAWhile() {
         int delay = this.config.getInitialDelayMs();
-        long limit = System.nanoTime() + (this.config.getMaxLifetimeMs() * NANOSECONDS_PER_MILLISECOND);
+        long limit = System.nanoTime() + convertMillisecondsToNanoseconds(this.config.getMaxLifetimeMs());
         while (System.nanoTime() <= limit) {
             this.disableCarModeIfNecessary();
             forceStopCarHomeApp();
@@ -113,6 +127,7 @@ public class DockEventCleanupThread implements Runnable {
 
     /** Stop the parent service. */
     private void stopParent() {
+        LOGGER.debug("Stopping parent service");
         this.getParent().stopSelf();
     }
 
@@ -120,7 +135,7 @@ public class DockEventCleanupThread implements Runnable {
     private void disableCarModeIfNecessary() {
         UiModeManager uiModeManager = this.getUiModeManager();
         if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_CAR) {
-            Log.d("CursedCarHome", "DockEventCleanupThread: UI mode was set to car, disabling now");
+            LOGGER.debug("UI mode was set to car, disabling now");
             uiModeManager.disableCarMode(0);
             this.event.markDisableAttempt();
         }
@@ -129,7 +144,7 @@ public class DockEventCleanupThread implements Runnable {
     /** Try to force-stop the CarHome application, if it's running. */
     private void forceStopCarHomeApp() {
         try {
-            Log.d("CursedCarHome", "DockEventCleanupThread: killing background packages for \"com.google.android.carhome\" package");
+            LOGGER.debug("Killing background packages for \"com.google.android.carhome\" package");
             ActivityManager activityManager = (ActivityManager) this.getContext().getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.killBackgroundProcesses("com.google.android.carhome");  // requires KILL_BACKGROUND_PROCESSES
             this.event.markKillAttempt();
@@ -150,7 +165,7 @@ public class DockEventCleanupThread implements Runnable {
 
     /** Log the thread event to the database. */
     private void logEvent() {
-        EventDatabase database = new EventDatabase(this.getContext());
+        DockCleanupDatabase database = new DockCleanupDatabase(this.getContext());
         database.insertEvent(this.event);
     }
 

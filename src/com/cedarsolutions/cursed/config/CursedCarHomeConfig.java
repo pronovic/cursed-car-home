@@ -20,38 +20,17 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.config;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * Configuration tied to this application.
+ * Configuration for CursedCarHome.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
 public class CursedCarHomeConfig {
-
-    /** Default value for speakerEnabled. */
-    public static final boolean DEFAULT_SPEAKER_ENABLED = true;
-
-    /** Default value for monitoringEnabled. */
-    public static final boolean DEFAULT_MONITORING_ENABLED = true;
-
-    /** Default value for maxLifetimeMs. */
-    public static final String DEFAULT_MAX_LIFETIME_MS = "120000";
-
-    /** Default value for initialDelayMs. */
-    public static final String DEFAULT_INITIAL_DELAY_MS = "100";
-
-    /** Default value for maxDelayMs. */
-    public static final String DEFAULT_MAX_DELAY_MS = "5000";
-
-    /** Default value for dailyReportEnabled. */
-    public static final boolean DEFAULT_DAILY_REPORT_ENABLED = false;
-
-    /** Default value for dailyReportTime. */
-    public static final String DEFAULT_DAILY_REPORT_TIME = "1100";
 
     /** Whether speakerphone workaround is in enabled. */
     private boolean workaroundEnabled;
@@ -74,20 +53,55 @@ public class CursedCarHomeConfig {
     /** Time of day to run the daily report, if enabled. */
     private String dailyReportTime;
 
-    /** Create a empty configuration. */
-    public CursedCarHomeConfig() {
-    }
-
     /** Create configuration based on an application context. */
     public CursedCarHomeConfig(Context context) {
+        // Remember that the real defaults are configured in preferences.xml.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        this.workaroundEnabled = preferences.getBoolean("workaroundEnabled", DEFAULT_SPEAKER_ENABLED);
-        this.monitoringEnabled = preferences.getBoolean("monitoringEnabled", DEFAULT_MONITORING_ENABLED);
-        this.maxLifetimeMs = Integer.parseInt(preferences.getString("maxLifetimeMs", DEFAULT_MAX_LIFETIME_MS));
-        this.initialDelayMs = Integer.parseInt(preferences.getString("initialDelayMs", DEFAULT_INITIAL_DELAY_MS));
-        this.maxDelayMs = Integer.parseInt(preferences.getString("maxDelayMs", DEFAULT_MAX_DELAY_MS));
-        this.dailyReportEnabled = preferences.getBoolean("dailyReportEnabled", DEFAULT_DAILY_REPORT_ENABLED);
-        this.dailyReportTime = preferences.getString("dailyReportTime", DEFAULT_DAILY_REPORT_TIME);
+        this.workaroundEnabled = preferences.getBoolean("workaroundEnabled", false);
+        this.monitoringEnabled = preferences.getBoolean("monitoringEnabled", false);
+        this.maxLifetimeMs = Integer.parseInt(preferences.getString("maxLifetimeMs", "0"));
+        this.initialDelayMs = Integer.parseInt(preferences.getString("initialDelayMs", "0"));
+        this.maxDelayMs = Integer.parseInt(preferences.getString("maxDelayMs", "0"));
+        this.dailyReportEnabled = preferences.getBoolean("dailyReportEnabled", false);
+        this.dailyReportTime = preferences.getString("dailyReportTime", "0");
+    }
+
+    /** String representation of this object. */
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("CursedCarHome Configuration\n");
+
+        buffer.append("workaroundEnabled = ");
+        buffer.append(this.workaroundEnabled);
+        buffer.append("\n");
+
+        buffer.append("monitoringEnabled = ");
+        buffer.append(this.monitoringEnabled);
+        buffer.append("\n");
+
+        buffer.append("maxLifetimeMs = ");
+        buffer.append(this.maxLifetimeMs);
+        buffer.append("\n");
+
+        buffer.append("initialDelayMs = ");
+        buffer.append(this.initialDelayMs);
+        buffer.append("\n");
+
+        buffer.append("maxDelayMs = ");
+        buffer.append(this.maxDelayMs);
+        buffer.append("\n");
+
+        buffer.append("dailyReportEnabled = ");
+        buffer.append(this.dailyReportEnabled);
+        buffer.append("\n");
+
+        buffer.append("dailyReportTime = ");
+        buffer.append(this.dailyReportTime);
+        buffer.append("\n");
+
+        return buffer.toString();
     }
 
     public boolean getWorkaroundEnabled() {

@@ -20,23 +20,29 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import com.cedarsolutions.cursed.R;
+import com.cedarsolutions.cursed.config.CursedCarHomeConfig;
 
 /**
- * Runs cleanup tasks on the database once per day.
+ * Activity to edit application preferences.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DailyReportAlarmReceiver extends BroadcastReceiver {
+public class EditPreferencesActivity extends Activity {
 
+    /** Called when the activity is starting. */
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "DailyReportAlarmReceiver was invoked");
-        Intent service = new Intent(context, DailyReportService.class);
-        context.startService(service);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        CursedCarHomeConfig config = new CursedCarHomeConfig(this);
+        setContentView(R.layout.settings);
+        TextView settingsTextView = (TextView) findViewById(R.id.settings);
+        settingsTextView.setText(config.toString());
     }
+
 }

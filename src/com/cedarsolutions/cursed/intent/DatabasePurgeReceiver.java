@@ -20,23 +20,28 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.intent;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.service.DatabasePurgeService;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * Runs cleanup tasks on the database once per day.
+ * Starts the database purge process.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DailyCleanupAlarmReceiver extends BroadcastReceiver {
+public class DatabasePurgeReceiver extends BroadcastReceiver {
+
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DatabasePurgeReceiver.class);
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "DailyCleanupAlarmReceiver was invoked");
-        Intent service = new Intent(context, DailyCleanupService.class);
+        LOGGER.debug("Database purge alarm was triggered");
+        Intent service = new Intent(context, DatabasePurgeService.class);
         context.startService(service);
     }
 

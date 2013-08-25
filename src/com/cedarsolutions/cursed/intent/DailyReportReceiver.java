@@ -20,30 +20,28 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.intent;
 
-import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.service.DailyReportService;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * Service that does daily cleanup of the event database.
+ * Starts the daily report.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DailyCleanupService extends Service {
+public class DailyReportReceiver extends BroadcastReceiver {
+
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DailyReportReceiver.class);
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("CursedCarHome", "DailyCleanupService started");
-        EventDatabase database = new EventDatabase(this);
-        database.deleteOldData();
-        return Service.START_NOT_STICKY;  // it's ok for the system to kill it
+    public void onReceive(Context context, Intent intent) {
+        LOGGER.debug("Daily report alarm was triggered");
+        Intent service = new Intent(context, DailyReportService.class);
+        context.startService(service);
     }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
 }

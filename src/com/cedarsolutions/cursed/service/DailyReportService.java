@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,7 +29,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.R;
+import com.cedarsolutions.cursed.activity.DailyReportActivity;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
  * Service that runs the daily report.
@@ -37,19 +40,32 @@ import android.util.Log;
  */
 public class DailyReportService  extends Service {
 
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DailyReportService.class);
+
+    /** Called by the system every time a client explicitly starts the service. */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("CursedCarHome", "DailyReportService started");
-        this.notifyDailyReportActivity();
+        LOGGER.debug("DailyReportService started");
+        this.triggerDailyReportActivity();
         return Service.START_NOT_STICKY;  // it's ok for the system to kill it
     }
 
+    /** Called by the system to notify a Service that it is no longer used and is being removed. */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LOGGER.debug("DailyReportService destroyed");
+    }
+
+    /** Return the communication channel to the service. */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    private void notifyDailyReportActivity() {
+    /** Trigger the daily report activity UI component. */
+    private void triggerDailyReportActivity() {
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.cch, "Cursed Car Home Daily Report", System.currentTimeMillis());
         CharSequence contentTitle = "Cursed Car Home Daily Report";

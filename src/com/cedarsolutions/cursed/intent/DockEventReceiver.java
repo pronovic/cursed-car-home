@@ -20,26 +20,33 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.intent;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.service.DockEventService;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * Receives the standard BOOT_COMPLETED event and schedules jobs.
+ * Receives the standard Android dock event and starts the cleanup service.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class BootCompletedReceiver extends BroadcastReceiver {
+public class DockEventReceiver extends BroadcastReceiver {
 
-    /** Handle the BOOT_COMPLETED intent. */
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DockEventReceiver.class);
+
+    // To test this, use ADB once the emulator is running:
+    //    C:\Ken\Program Files\Android\android-sdk\platform-tools>adb shell
+    //    # am broadcast -a android.intent.action.DOCK_EVENT --ei android.intent.extra.DOCK_STATE 2
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
-            Log.d("CursedCarHome", "BootCompletedReceiver got BOOT_COMPLETED intent");
-            AlarmScheduler.configureAllAlarms(context);
-        }
+        LOGGER.debug("Got DOCK_EVENT event");
+        Intent service = new Intent(context, DockEventService.class);
+        context.startService(service);
     }
 
 }

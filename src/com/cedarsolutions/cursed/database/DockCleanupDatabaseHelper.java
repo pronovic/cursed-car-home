@@ -20,59 +20,63 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * SQLite database helper class for the event database.
+ * Database helper class for the dock cleanup event database.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class EventDatabaseHelper extends SQLiteOpenHelper {
+public class DockCleanupDatabaseHelper extends SQLiteOpenHelper {
+
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DockCleanupDatabaseHelper.class);
 
     /** Database name. */
-    private static final String DATABASE_NAME = "cursed_car_home_events";
+    private static final String DATABASE_NAME = "dock_cleanup_events";
 
     /** Database version. */
     private static final int DATABASE_VERSION = 1;
 
     /** Create a helper for a context. */
-    public EventDatabaseHelper(Context context) {
+    public DockCleanupDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     /** Create the database. */
     @Override
     public void onCreate(SQLiteDatabase database) {
-        Log.w("CursedCarHome", "EventDatabaseHelper.onCreate(): creating event database.");
+        LOGGER.debug("Creating dock cleanup event database.");
         database.execSQL(buildCreateSql());
     }
 
     /** Upgrade the database. */
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        Log.w("CursedCarHome", "EventDatabaseHelper.onUpgrade(): upgrading to new version of event database, which will destroy old data.");
+        LOGGER.debug("Upgrading to new version of dock cleanup event database, which will destroy old data.");
         database.execSQL(buildDropTableSql());
-        onCreate(database);
+        this.onCreate(database);
     }
 
     /** Build the SQL create statement. */
     private static String buildCreateSql() {
         StringBuffer sql = new StringBuffer();
         sql.append("create table if not exists\n");
-        sql.append("event(id string, \n");
-        sql.append("      thread_start long, \n");
-        sql.append("      thread_stop long, \n");
-        sql.append("      disable_attempts int, \n");
-        sql.append("      kill_attempts int)\n");
+        sql.append("dock_cleanup_events(id string, \n");
+        sql.append("                    thread_start long, \n");
+        sql.append("                    thread_stop long, \n");
+        sql.append("                    disable_attempts int, \n");
+        sql.append("                    kill_attempts int)\n");
         return sql.toString();
     }
 
     /** Build the SQL drop table statement. */
     private static String buildDropTableSql() {
-        return "drop table event";
+        return "drop table dock_cleanup_events";
     }
 }

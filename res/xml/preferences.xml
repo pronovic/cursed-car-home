@@ -5,14 +5,14 @@
 	    <CheckBoxPreference android:key="workaroundEnabled"
 	                android:title="Enabled"
 	                android:summary="Enable the speakerphone workaround"
-	                android:defaultValue="true" />
+	                android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Monitoring Process" android:key="monitoring">
         <CheckBoxPreference android:key="monitoringEnabled"
                             android:title="Enabled"
                             android:summary="Enable or disable the monitoring process"
-                            android:defaultValue="true" />
+                            android:defaultValue="false" />
 
         <ListPreference android:key="maxLifetimeMs"
                         android:title="Process Lifetime"
@@ -43,11 +43,11 @@
         <CheckBoxPreference android:key="dailyReportEnabled"
                     android:title="Daily Report Enabled"
                     android:summary="Enable the daily report"
-                    android:defaultValue="true" />
+                    android:defaultValue="false" />
         <ListPreference android:key="dailyReportTime"
                         android:title="Daily Report Time"
                         android:summary="Time at which to run the daily report"
-                        android:defaultValue="1100"
+                        android:defaultValue="0900"
                         android:entries="@array/timeOfDayHours"
                         android:entryValues="@array/timeOfDayHoursValues"
                         android:dependency="dailyReportEnabled" />

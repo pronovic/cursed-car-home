@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,31 +35,39 @@ import java.util.TimeZone;
  */
 public class DateUtils {
 
-    /** Format a date as an ISO 8601 date. */
+    /** Number of nanoseconds per millisecond. */
+    public static final long NANOSECONDS_PER_MILLISECOND = 1000000;
+
+    /** Convert milliseconds to nanoseconds. */
+    public static long convertMillisecondsToNanoseconds(long milliseconds) {
+        return milliseconds * NANOSECONDS_PER_MILLISECOND;
+    }
+
+    /** Format a date as an ISO 8601 string in local time. */
     public static String formatIso8601(Date date) {
         return formatIso8601(date.getTime());
     }
 
-    /** Format a millisecond timestamp as an ISO 8601 date. */
+    /** Format a millisecond timestamp as an ISO 8601 string in local time. */
     public static String formatIso8601(long timestamp) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
-        return df.format(new Date(timestamp));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
+        return format.format(new Date(timestamp));
     }
 
-    /** Format a UTC date as an ISO 8601 date. */
+    /** Format as an ISO 8601 string in UTC. */
     public static String formatIso8601Utc(Date date) {
         return formatIso8601Utc(date.getTime());
     }
 
-    /** Format a UTC millisecond timestamp as an ISO 8601 date. */
+    /** Format a millisecond timestamp as an ISO 8601 string in UTC. */
     public static String formatIso8601Utc(long timestamp) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
-        df.setTimeZone(tz);
-        return df.format(new Date(timestamp));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
+        format.setTimeZone(tz);
+        return format.format(new Date(timestamp));
     }
 
-    /** Create a date. */
+    /** Create a date in the local time zone. */
     public static Date createDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
         Calendar calendar = GregorianCalendar.getInstance(Locale.US);
         calendar.clear();
@@ -91,53 +99,44 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    /** Get the time from a passed-in date. */
+    /** Get a 4-digit string time from a passed-in date, like "1145". */
     public static String getTime(Date date) {
         return getTime(date.getTime());
     }
 
-    /** Get the time from a passed-in timestamp. */
+    /** Get a 4-digit string time from a passed-in timestamp, like "1145". */
     public static String getTime(long timestamp) {
         Calendar calendar = GregorianCalendar.getInstance(Locale.US);
         calendar.setTimeInMillis(timestamp);
         int time = (calendar.get(Calendar.HOUR_OF_DAY) * 100) + calendar.get(Calendar.MINUTE);
-        return String.valueOf(time);
+        return time < 1000 ? "0" + String.valueOf(time) : String.valueOf(time);
     }
 
-    /** Get the current time. */
-    public static String getCurrentTime() {
-        return getTime(new Date());
-    }
-
-    /** Get the UTC time from a passed-in date. */
+    /** Get a 4-digit string time in UTC from a passed-in date, like "1145". */
     public static String getUtcTime(Date date) {
         return getUtcTime(date.getTime());
     }
 
-    /** Get the UTC time from a passed-in timestamp. */
+    /** Get a 4-digit string time in UTC from a passed-in timestamp, like "1145". */
     public static String getUtcTime(long timestamp) {
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
         calendar.setTimeInMillis(timestamp);
         int time = (calendar.get(Calendar.HOUR_OF_DAY) * 100) + calendar.get(Calendar.MINUTE);
-        return String.valueOf(time);
-    }
-
-    /** Get the current time in UTC. */
-    public static String getCurrentUtcTime() {
-        return getUtcTime(new Date());
+        return time < 1000 ? "0" + String.valueOf(time) : String.valueOf(time);
     }
 
     /**
-     * Return a date for the next occurrence of a time.
+     * Return a date for the next occurrence of a time in the local timezone.
      *
      * <p>
-     * So, if it's 10:00am and the passed-in time is "1005", the result will be
-     * the same date at 10:05am.  If it's 11:00am instead, the result will be
-     * the next day at 10:05am.  This is useful when generating Android alarms.
+     * So, if it's 10:00am local and the passed-in time is "1005", the result
+     * will be the same date at 10:05am.  If it's 11:00am instead, the result
+     * will be the next day at 10:05am.  This is useful when generating Android
+     * alarms.
      * </p>
      *
      * @param time   Time as a string, like "1100" for 11:00am or "1425" for 2:25pm.
-     * @return Java date for the next occurrence
+     * @return Java date for the next occurrence of the time in the local time zone
      */
     public static Date getNextOccurrence(String time) {
         return getNextOccurrence(time, new Date());
@@ -147,17 +146,23 @@ public class DateUtils {
      * Return a date for the next occurrence of a time.
      *
      * <p>
-     * So, if it's 10:00am and the passed-in time is "1005", the result will be
-     * the same date at 10:05am.  If it's 11:00am instead, the result will be
-     * the next day at 10:05am.  This is useful when generating Android alarms.
+     * So, if it's 10:00am local and the passed-in time is "1005", the result
+     * will be the same date at 10:05am.  If it's 11:00am instead, the result
+     * will be the next day at 10:05am.  This is useful when generating Android
+     * alarms.
      * </p>
      *
      * @param time   Time as a string, like "1100" for 11:00am or "1425" for 2:25pm.
      * @param now    Date to consider as "now" for calculations
      *
-     * @return Java date for the next occurrence
+     * @return Java date for the next occurrence of the time in the local time zone
      */
     public static Date getNextOccurrence(String time, Date now) {
+        if (time.length() == 3) {
+            // so "900" turns to "0900"
+            time = "0" + time;
+        }
+
         Calendar calendar = GregorianCalendar.getInstance(Locale.US);
         calendar.setTime(now);
 
@@ -182,13 +187,14 @@ public class DateUtils {
      * Return a date for the next occurrence of a UTC time.
      *
      * <p>
-     * So, if it's 10:00am and the passed-in time is "1005", the result will be
-     * the same date at 10:05am.  If it's 11:00am instead, the result will be
-     * the next day at 10:05am.  This is useful when generating Android alarms.
+     * So, if it's 10:00am UTC and the passed-in time is "1005", the result
+     * will be the same date at 10:05am.  If it's 11:00am instead, the result
+     * will be the next day at 10:05am.  This is useful when generating Android
+     * alarms.
      * </p>
      *
      * @param time   Time as a string, like "1100" for 11:00am or "1425" for 2:25pm.
-     * @return Java date for the next occurrence
+     * @return Java date for the next occurrence of the time in UTC
      */
     public static Date getNextUtcOccurrence(String time) {
         return getNextUtcOccurrence(time, new Date());
@@ -198,15 +204,16 @@ public class DateUtils {
      * Return a date for the next occurrence of a UTC time.
      *
      * <p>
-     * So, if it's 10:00am and the passed-in time is "1005", the result will be
-     * the same date at 10:05am.  If it's 11:00am instead, the result will be
-     * the next day at 10:05am.  This is useful when generating Android alarms.
+     * So, if it's 10:00am UTC and the passed-in time is "1005", the result
+     * will be the same date at 10:05am.  If it's 11:00am instead, the result
+     * will be the next day at 10:05am.  This is useful when generating Android
+     * alarms.
      * </p>
      *
      * @param time   Time as a string, like "1100" for 11:00am or "1425" for 2:25pm.
      * @param now    Date to consider as "now" for calculations
      *
-     * @return Java date for the next occurrence
+     * @return Java date for the next occurrence of the time in UTC
      */
     public static Date getNextUtcOccurrence(String time, Date now) {
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);

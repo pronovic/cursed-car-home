@@ -20,9 +20,11 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.database;
 
 import java.util.UUID;
+
+import com.cedarsolutions.cursed.util.DateUtils;
 
 /**
  * Event tied to execution of the DockEventCleanupThread.

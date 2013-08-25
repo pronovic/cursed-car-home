@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cedarsolutions.cursed"
-          android:versionCode="1"
-          android:versionName="1.0" >
+          android:versionCode="1" android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="10"
-              android:targetSdkVersion="10" />
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="10" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
@@ -15,56 +13,56 @@
 
     <application android:allowBackup="true"
                  android:icon="@drawable/cch"
-                 android:label="@string/app_name"
+                 android:label="CursedCarHome"
                  android:theme="@style/AppTheme" >
 
-        <activity android:name=".CursedCarHomeMain" android:label="@string/app_name">
+        <activity android:name=".activity.CursedCarHomeMain" android:label="CursedCarHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".EditPreferencesActivity" />
+        <activity android:name=".activity.DailyReportActivity" />
 
-        <receiver android:name=".CallEventReceiver" >
+        <activity android:name=".activity.EditPreferencesActivity" />
+
+        <receiver android:name=".intent.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".DockEventReceiver">
+        
+        <receiver android:name=".intent.DailyReportReceiver" />
+        
+        <receiver android:name=".intent.DatabasePurgeReceiver" />
+        
+        <receiver android:name=".intent.DockEventReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOCK_EVENT" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".BootCompletedReceiver">
+        <receiver android:name=".intent.PhoneCallEventReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
-        </receiver>
-
-        <receiver android:name=".DailyCleanupAlarmReceiver" />
-        <receiver android:name=".DailyReportAlarmReceiver" />
-
-        <service android:name=".DockEventCleanupService"
-                 android:process=":DockEventCleanupProcess"
-                 android:icon="@drawable/cch"
-                 android:label="@string/service" />
-
-        <service android:name=".DailyCleanupService"
-                 android:process=":DailyCleanupProcess"
-                 android:icon="@drawable/cch"
-                 android:label="@string/service" />
+        </receiver>        
         
-        <service android:name=".DailyReportService"
+        <service android:name=".service.DailyReportService"
                  android:process=":DailyReportProcess"
                  android:icon="@drawable/cch"
-                 android:label="@string/service" />
+                 android:label="DailyReportService" />
+        
+        <service android:name=".service.DockEventService"
+                 android:process=":DockEventProcess"
+                 android:icon="@drawable/cch"
+                 android:label="DockEventService" />
 
-        <activity android:name=".DailyReportActivity"
-                  android:label="@string/title_activity_daily_report" />
+        <service android:name=".service.DatabasePurgeService"
+                 android:process=":DatabasePurgeProcess"
+                 android:icon="@drawable/cch"
+                 android:label="DatabasePurgeService" />
 
     </application>
 

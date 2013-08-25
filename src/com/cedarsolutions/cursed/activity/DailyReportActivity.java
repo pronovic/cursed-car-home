@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,21 +28,31 @@ import android.text.Html;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.cedarsolutions.cursed.R;
+import com.cedarsolutions.cursed.database.DockCleanupDatabase;
+import com.cedarsolutions.cursed.database.DockCleanupReport;
+
 /**
  * Activity that displays the daily report.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
 public class DailyReportActivity extends Activity {
 
+    /** Called when the activity is starting. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String reportHtml = this.generateReportHtml();
+
+        DockCleanupDatabase database = new DockCleanupDatabase(this);
+        DockCleanupReport report = database.createDailyDockCleanupReport();
+        String reportHtml = generateReportHtml(report);
+
         TextView textView = new TextView(this);
         textView.setText(Html.fromHtml(reportHtml));
         setContentView(textView);
     }
 
+    /** Initialize the contents of the Activity's standard options menu. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -50,10 +60,8 @@ public class DailyReportActivity extends Activity {
         return true;
     }
 
-    private String generateReportHtml() {
-        EventDatabase database = new EventDatabase(this);
-        DockCleanupReport report = database.createDockCleanupReport();
-
+    /** Generate HTML text based on a DockCleanupReport. */
+    private static String generateReportHtml(DockCleanupReport report) {
         StringBuffer html = new StringBuffer();
 
         html.append("<html>\n");
@@ -109,5 +117,4 @@ public class DailyReportActivity extends Activity {
 
         return html.toString();
     }
-
 }

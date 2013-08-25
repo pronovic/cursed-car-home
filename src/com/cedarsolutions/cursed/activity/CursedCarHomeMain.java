@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,16 +28,23 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.cedarsolutions.cursed.R;
+import com.cedarsolutions.cursed.intent.AlarmScheduler;
+import com.cedarsolutions.cursed.util.AndroidLogger;
+
 /**
- * This main activity for this application, which manages preferences.
+ * The main activity for CursedCarHome (manages preferences).
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
 public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(CursedCarHomeMain.class);
+
+    /** Called when the activity is starting. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +52,14 @@ public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPre
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
+    /** Initialize the contents of the Activity's standard options menu. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 0, 0, "Show current settings");
         return super.onCreateOptionsMenu(menu);
     }
 
+    /** Called whenever an item in your options menu is selected. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -62,8 +71,10 @@ public class CursedCarHomeMain extends PreferenceActivity implements OnSharedPre
         }
     }
 
+    /** Called when a shared preference is changed, added, or removed. */
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        Log.d("CursedCarHome", "Re-configuring all alarms because configuration changed");
+        LOGGER.debug("Re-configuring all alarms because configuration changed");
         AlarmScheduler.configureAllAlarms(this);
     }
 }

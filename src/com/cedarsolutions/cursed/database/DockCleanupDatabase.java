@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.database;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -31,24 +31,29 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.util.AndroidLogger;
+import com.cedarsolutions.cursed.util.DateUtils;
 
 /**
- * Provides operations on the event database.
+ * Provides operations on the dock cleanup event database.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class EventDatabase {
+public class DockCleanupDatabase {
+
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(DockCleanupDatabase.class);
 
     /** Underlying SQLite database. */
     private SQLiteDatabase database;
 
-    /** Create an event database. */
-    public EventDatabase(Context context) {
-        EventDatabaseHelper helper = new EventDatabaseHelper(context);
+    /** Create a database. */
+    public DockCleanupDatabase(Context context) {
+        DockCleanupDatabaseHelper helper = new DockCleanupDatabaseHelper(context);
         this.database = helper.getWritableDatabase();
     }
 
-    /** Insert an event. */
+    /** Insert an event into the database. */
     public void insertEvent(DockCleanupEvent event) {
         ContentValues values = new ContentValues();
         values.put("id", event.getId());
@@ -56,31 +61,33 @@ public class EventDatabase {
         values.put("thread_stop", event.getStopTime());
         values.put("disable_attempts", event.getDisableAttempts());
         values.put("kill_attempts", event.getKillAttempts());
-        long result = this.database.insert("event", null, values);
+        long result = this.database.insert("dock_cleanup_events", null, values);
         if (result == -1) {
-            Log.e("CursedCarHome", "EventDatabase.insertEvent(): failed to insert: " + event.toString());
+            LOGGER.error("Failed to insert: " + event.toString());
         } else {
-            Log.i("CursedCarHome", "EventDatabase.insertEvent(): inserted: " + event.toString());
+            LOGGER.debug("Inserted: " + event.toString());
         }
     }
 
-    /** Delete old data. */
-    public void deleteOldData() {
-        long limit = generateDeleteLimit();
-        Log.d("CursedCarHome", "EventDatabase: deleting data older than 1 month (<= " + DateUtils.formatIso8601Utc(limit) + ")");
-        this.database.delete("event", "thread_start <= ?", new String[] { Long.toString(limit), });
+    /** Purge old data from the database. */
+    public void purgeOldData() {
+        long limit = generatePurgeLimit();
+        LOGGER.debug("Deleting data older than 1 month (<= " + DateUtils.formatIso8601Utc(limit) + ")");
+        this.database.delete("dock_cleanup_events", "thread_start <= ?", new String[] { Long.toString(limit), });
     }
 
-    /** Create the daily report. */
-    public DockCleanupReport createDockCleanupReport() {
-        DateRange range = generateDateRange();
-        Log.d("CursedCarHome", "EventDatabase: using date range \"between " + range.start + " and " + range.end + "\" for query");
+    /** Create a DockCleanupReport covering the last 24 hours. */
+    public DockCleanupReport createDailyDockCleanupReport() {
+        LOGGER.debug("Creating dock cleanup report.");
+
+        DateRange range = generateDailyRange();
+        LOGGER.debug("Using date range \"between " + range.start + " and " + range.end + "\" for query");
 
         DockCleanupReport report = new DockCleanupReport();
         report.setReportStart(DateUtils.formatIso8601(range.start));
         report.setReportEnd(DateUtils.formatIso8601(range.end));
-        Log.d("CursedCarHome", "EventDatabase: report start is " + report.getReportStart());
-        Log.d("CursedCarHome", "EventDatabase: report end is " + report.getReportEnd());
+        LOGGER.debug("Report start is " + report.getReportStart());
+        LOGGER.debug("Report end is " + report.getReportEnd());
 
         this.fillDisableAttempts(report, range.start, range.end);
         this.fillStartTimes(report, range.start, range.end);
@@ -94,14 +101,14 @@ public class EventDatabase {
         Cursor c = null;
 
         try {
-            String sql = "select coalesce(sum(disable_attempts), 0) from event where thread_start between ? and ?";
+            String sql = "select coalesce(sum(disable_attempts), 0) from dock_cleanup_events where thread_start between ? and ?";
             c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
             c.moveToFirst();
             int disableAttempts = Integer.parseInt(c.getString(0));
             report.setDisableAttempts(disableAttempts);
-            Log.d("CursedCarHome", "EventDatabase: disableAttempts = " + report.getDisableAttempts());
+            LOGGER.debug("Retrieved disableAttempts = " + report.getDisableAttempts());
         } catch (Exception e) {
-            Log.e("CursedCarHome", "EventDatabase: failed to retrieve disable attempts: " + e.getMessage());
+            LOGGER.error("Failed to retrieve disable attempts: " + e.getMessage());
             report.setDisableAttempts(0);
         } finally {
             if (c != null) {
@@ -116,15 +123,15 @@ public class EventDatabase {
         Cursor c = null;
 
         try {
-            String sql = "select thread_start from event where thread_start between ? and ?";
+            String sql = "select thread_start from dock_cleanup_events where thread_start between ? and ?";
             c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
             while (c.moveToNext()) {
                 String startTime = DateUtils.formatIso8601Utc(Long.parseLong(c.getString(0)));
                 report.getStartTimes().add(startTime);
-                Log.d("CursedCarHome", "EventDatabase: added start time = " + startTime);
+                LOGGER.debug("Added start time = " + startTime);
             }
         } catch (Exception e) {
-            Log.e("CursedCarHome", "EventDatabase: failed to retrieve start times: " + e.getMessage());
+            LOGGER.error("Failed to retrieve start times: " + e.getMessage());
             report.getStartTimes().clear();
         } finally {
             if (c != null) {
@@ -140,8 +147,8 @@ public class EventDatabase {
         protected long end;
     }
 
-    /** Generate a 1-day date range for the previous day. */
-    private static DateRange generateDateRange() {
+    /** Generate a a date range for the daily report (past 24 hours). */
+    private static DateRange generateDailyRange() {
         DateRange range = new DateRange();
 
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
@@ -153,8 +160,8 @@ public class EventDatabase {
         return range;
     }
 
-    /** Generate a limit that defines data older than 5 weeks. */
-    private static long generateDeleteLimit() {
+    /** Generate a limit that defines which data to purge (older than 1 month). */
+    private static long generatePurgeLimit() {
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
         return calendar.getTime().getTime();

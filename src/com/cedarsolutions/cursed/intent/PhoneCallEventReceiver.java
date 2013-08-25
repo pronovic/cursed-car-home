@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.intent;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,35 +28,40 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Log;
+
+import com.cedarsolutions.cursed.config.CursedCarHomeConfig;
+import com.cedarsolutions.cursed.util.AndroidLogger;
 
 /**
- * Receiver that runs when calls start, to disable the speakerphone.
+ * Receives phone call events and manges the speakerphone workaround.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class CallEventReceiver extends BroadcastReceiver {
+public class PhoneCallEventReceiver extends BroadcastReceiver {
+
+    /** Logger instance. */
+    private static final AndroidLogger LOGGER = AndroidLogger.getLogger(PhoneCallEventReceiver.class);
 
     /** Receive events. */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "CallEventReceiver received an intent");
+        LOGGER.debug("Received call-related event");
         Bundle extras = intent.getExtras();
         if (extras != null) {
             String state = extras.getString(TelephonyManager.EXTRA_STATE);
             if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(state)) {
-                Log.d("CursedCarHome", "CallEventReceiver: call has started (state=" + state + ")");
+                LOGGER.debug("Call has started (state=" + state + ")");
                 CursedCarHomeConfig config = new CursedCarHomeConfig(context);
                 if (config.getWorkaroundEnabled()) {
-                    Log.d("CursedCarHome", "CallEventReceiver: speakerphone monitoring is enabled, will disable speakerphone");
+                    LOGGER.debug("Speakerphone monitoring is enabled, will disable speakerphone");
                     disableSpeakerphone(context);
                 } else {
-                    Log.d("CursedCarHome", "CallEventReceiver: speakerphone monitoring is NOT enabled, ignoring event");
+                    LOGGER.debug("Speakerphone monitoring is NOT enabled, ignoring event");
                 }
             } else {
-                Log.d("CursedCarHome", "CallEventReceiver: call ignoring state (state=" + state + ")");
+                LOGGER.debug("Ignoring call with state (state=" + state + ")");
             }
         } else {
-            Log.d("CursedCarHome", "CallEventReceiver: no extras, ignoring event");
+            LOGGER.debug("Ignoring event with no extras");
         }
     }
 

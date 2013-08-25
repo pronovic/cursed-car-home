@@ -20,7 +20,7 @@
  * Project  : Cursed Car Home
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-package com.cedarsolutions.cursed;
+package com.cedarsolutions.cursed.database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,22 @@ import java.util.List;
  */
 public class DockCleanupReport {
 
+    /** Start of the range the report covers, as an ISO 8601 date string. */
     private String reportStart;
+
+    /** Endi of the range the report covers, as an ISO 8601 date string. */
     private String reportEnd;
+
+    /** Number of dock events handled during the range. */
     private int eventsHandled;
+
+    /** Number of attempts to disable dock mode that were made during the range. */
     private int disableAttempts;
+
+    /** Start time for each event that was handled. */
     private List<String> startTimes;
 
+    /** Default constructor. */
     public DockCleanupReport() {
         this.startTimes = new ArrayList<String>();
     }
