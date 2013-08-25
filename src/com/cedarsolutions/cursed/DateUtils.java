@@ -42,7 +42,7 @@ public class DateUtils {
 
     /** Format a millisecond timestamp as an ISO 8601 date. */
     public static String formatIso8601(long timestamp) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS XXX", Locale.US);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
         return df.format(new Date(timestamp));
     }
 
@@ -54,7 +54,7 @@ public class DateUtils {
     /** Format a UTC millisecond timestamp as an ISO 8601 date. */
     public static String formatIso8601Utc(long timestamp) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS XXX", Locale.US);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS ZZ", Locale.US);
         df.setTimeZone(tz);
         return df.format(new Date(timestamp));
     }
