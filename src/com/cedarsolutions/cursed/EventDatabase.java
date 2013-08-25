@@ -22,8 +22,14 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.cedarsolutions.cursed;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -43,7 +49,7 @@ public class EventDatabase {
     }
 
     /** Insert an event. */
-    public void insertEvent(ThreadEvent event) {
+    public void insertEvent(DockCleanupEvent event) {
         ContentValues values = new ContentValues();
         values.put("id", event.getId());
         values.put("thread_start", event.getStartTime());
@@ -56,6 +62,86 @@ public class EventDatabase {
         } else {
             Log.i("CursedCarHome", "EventDatabase.insertEvent(): inserted: " + event.toString());
         }
+    }
+
+    /** Create the daily report. */
+    public DockCleanupReport createDockCleanupReport() {
+        DateRange range = generateDateRange();
+        Log.d("CursedCarHome", "EventDatabase: using date range \"between " + range.start + " and " + range.end + "\" for query");
+
+        DockCleanupReport report = new DockCleanupReport();
+        report.setReportStart(DateUtils.formatIso8601(range.start));
+        report.setReportEnd(DateUtils.formatIso8601(range.end));
+
+        this.fillDisableAttempts(report, range.start, range.end);
+        this.fillStartTimes(report, range.start, range.end);
+        report.setEventsHandled(report.getStartTimes().size());
+
+        return report;
+    }
+
+    /** Fill disable attempts into a report. */
+    private void fillDisableAttempts(DockCleanupReport report, long start, long end) {
+        Cursor c = null;
+
+        try {
+            String sql = "select coalesce(sum(disable_attempts), 0) from event where thread_start between ? and ?";
+            c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
+            c.moveToFirst();
+            int disableAttempts = Integer.parseInt(c.getString(0));
+            report.setDisableAttempts(disableAttempts);
+            Log.d("CursedCarHome", "EventDatabase: disableAttempts = " + report.getDisableAttempts());
+        } catch (Exception e) {
+            Log.e("CursedCarHome", "EventDatabase: failed to retrieve disable attempts: " + e.getMessage());
+            report.setDisableAttempts(0);
+        } finally {
+            if (c != null) {
+                c.close();
+                c = null;
+            }
+        }
+    }
+
+    /** Fill start times into a report. */
+    private void fillStartTimes(DockCleanupReport report, long start, long end) {
+        Cursor c = null;
+
+        try {
+            String sql = "select thread_start from event where thread_start between ? and ?";
+            c = this.database.rawQuery(sql, new String[] { Long.toString(start), Long.toString(end), });
+            while (c.moveToNext()) {
+                String startTime = DateUtils.formatIso8601(Long.parseLong(c.getString(0)));
+                report.getStartTimes().add(startTime);
+                Log.d("CursedCarHome", "EventDatabase: added start time = " + startTime);
+            }
+        } catch (Exception e) {
+            Log.e("CursedCarHome", "EventDatabase: failed to retrieve start times: " + e.getMessage());
+            report.getStartTimes().clear();
+        } finally {
+            if (c != null) {
+                c.close();
+                c = null;
+            }
+        }
+    }
+
+    /** Date range object. */
+    private static class DateRange {
+        protected long start;
+        protected long end;
+    }
+
+    /** Generate a 1-day date range for the previous day. */
+    private static DateRange generateDateRange() {
+        DateRange range = new DateRange();
+
+        Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US);
+        range.end = calendar.getTime().getTime();
+
+        calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR) - 24); // past 24 hours
+        range.start = calendar.getTime().getTime();
+
+        return range;
     }
 
 }

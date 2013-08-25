@@ -38,7 +38,7 @@ public class DockEventCleanupThread implements Runnable {
     private static final long NANOSECONDS_PER_MILLISECOND = 1000000;
 
     /** Thread event tied to this thread. */
-    private ThreadEvent event;
+    private DockCleanupEvent event;
 
     /** Parent service associated with this thread. */
     private DockEventCleanupService parent;
@@ -51,14 +51,14 @@ public class DockEventCleanupThread implements Runnable {
 
     /** Constructor. */
     private DockEventCleanupThread(DockEventCleanupService parent, Context context, CursedCarHomeConfig config) {
-        this.event = new ThreadEvent();
+        this.event = new DockCleanupEvent();
         this.parent = parent;
         this.context = context;
         this.config = config;
     }
 
-    /** Start a new cleanup thread. */
-    protected static void startCleanupThread(DockEventCleanupService parent, Context context) {
+    /** Start a new thread. */
+    protected static void startThread(DockEventCleanupService parent, Context context) {
         CursedCarHomeConfig config = new CursedCarHomeConfig(context);
         DockEventCleanupThread thread = new DockEventCleanupThread(parent, context, config);
         new Thread(thread).start();

@@ -52,6 +52,15 @@
                  android:process=":DockEventCleanupProcess"
                  android:icon="@drawable/cch"
                  android:label="@string/service" />
+
+        <service android:name=".DailyReportService"
+                 android:process=":DailyReportProcess"
+                 android:icon="@drawable/cch"
+                 android:label="@string/service" />
+
+        <activity android:name=".DailyReportActivity"
+                  android:label="@string/title_activity_daily_report" />
+
     </application>
 
 </manifest>

@@ -3,5 +3,7 @@
 
     <string name="app_name">CursedCarHome</string>
     <string name="service">CursedCarHomeService</string>
+    <string name="title_activity_daily_report">DailyReportActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

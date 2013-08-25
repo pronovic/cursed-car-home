@@ -36,5 +36,7 @@ public class DailyReportAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("CursedCarHome", "DailyReportAlarmReceiver was invoked");
+        Intent service = new Intent(context, DailyReportService.class);
+        context.startService(service);
     }
 }

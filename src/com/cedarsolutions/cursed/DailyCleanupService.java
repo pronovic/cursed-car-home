@@ -22,22 +22,27 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 package com.cedarsolutions.cursed;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
 import android.util.Log;
 
 /**
- * Runs cleanup tasks on the database once per day.
+ * Service that does daily cleanup of the event database.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class DailyCleanupAlarmReceiver extends BroadcastReceiver {
+public class DailyCleanupService extends Service {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d("CursedCarHome", "DailyCleanupAlarmReceiver was invoked");
-        Intent service = new Intent(context, DailyCleanupService.class);
-        context.startService(service);
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("CursedCarHome", "DailyCleanupService started");
+        DailyCleanupThread.startThread(this, this.getApplicationContext());
+        return Service.START_NOT_STICKY;  // it's ok for the system to kill it
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 }

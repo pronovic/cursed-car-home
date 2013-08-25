@@ -28,7 +28,7 @@ import java.util.UUID;
  * Event tied to execution of the DockEventCleanupThread.
  * @author Kenneth J. Pronovici <pronovic@ieee.org>
  */
-public class ThreadEvent {
+public class DockCleanupEvent {
 
     /** Event identifier. */
     private String id;
@@ -46,7 +46,7 @@ public class ThreadEvent {
     private int killAttempts;
 
     /** Default constructor. */
-    public ThreadEvent() {
+    public DockCleanupEvent() {
         this.id = UUID.randomUUID().toString();
     }
 
