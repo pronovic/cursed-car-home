@@ -1,0 +1,4 @@
+This project isn't quite up to my usual standards.
+It deserves some further unit tests.  However, I haven't
+really figured out how to test most of the code I've
+written, since most of it is user interface code.
