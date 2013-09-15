@@ -1,0 +1,26 @@
+This is the CursedCarHome Android application.  Source code is found at
+Google Code:
+
+   https://code.google.com/p/cursed-car-home/
+
+My T-Mobile G2 Android phone, getting up there in years, is "cursed"
+periodically by a phantom that repeatedly turns on the Car Home application as
+if the phone were being docked. (It's probably a hardware problem, i.e. due to
+dirt on the USB port, but repeated cleaning hasn't really resolved the
+situation.)
+
+Besides the annoyance caused by the actual invocation of the Car Home
+application, a bigger problem is that Car Home enables the speakerphone and
+never turns it back off. It's not a good situation.
+
+I've tried several of the existing applications in the Android
+marketplace, but nothing has quite worked for me. This application is my
+attempt to solve the problem. It's a "big hammer" -- there's a service which
+kills Car Home if it's ever found running, and I hook into the phone call
+process to disable the speakerphone every time an inbound or outbound call is
+initiated. (This can be controlled by configuration.)
+
+I'm still testing, but so far it seems to work ok. After I get some more
+confidence that what I'm doing doesn't hurt anything, I will probably release
+this to the marketplace. Before then, I just want to make the code available so
+it's useful to others you might have the same problem.    
