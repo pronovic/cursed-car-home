@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cedarsolutions.cursed.database.DockCleanupDatabase;
@@ -79,9 +80,12 @@ public class DailyReportActivity extends Activity {
 
         String reportHtml = generateReportHtml(dockCleanupReport, speakerphoneCleanupReport);
 
+        // See: http://stackoverflow.com/questions/1748977/making-textview-scrollable-in-android
+        ScrollView scroller = new ScrollView(this);
         TextView textView = new TextView(this);
         textView.setText(Html.fromHtml(reportHtml));
-        setContentView(textView);
+        scroller.addView(textView);
+        setContentView(scroller);
     }
 
     /** Generate HTML text based on a DockCleanupReport. */
@@ -94,9 +98,7 @@ public class DailyReportActivity extends Activity {
 
         html.append("<p>\n");
         html.append("This report provides a summary of the docking events\n");
-        html.append("that CursedCarHome has handled over the past 24 hours,\n");
-        html.append("as well as the number of times that CursedCarHome has\n");
-        html.append("proactively disabled the spreakerphone.\n");
+        html.append("that CursedCarHome has handled over the past 24 hours.\n");
         html.append("</p>\n");
 
         html.append("<h3>Summary</h3>\n");
@@ -125,14 +127,6 @@ public class DailyReportActivity extends Activity {
             html.append(" times<br/>\n");
         }
 
-        html.append("<b>Disabled speakerphone: </b>");
-        html.append(speakerphoneCleanupReport.getEventsHandled());
-        if (dockCleanupReport.getEventsHandled() == 1) {
-            html.append(" time<br/>\n");
-        } else {
-            html.append(" times<br/>\n");
-        }
-
         if (!dockCleanupReport.getStartTimes().isEmpty()) {
             html.append("<h3>Dock Cleanup Events</h3>\n");
 
@@ -142,20 +136,6 @@ public class DailyReportActivity extends Activity {
                 html.append(index);
                 html.append(": </b> ");
                 html.append(startTime);
-                html.append("<br/>\n");
-                index += 1;
-            }
-        }
-
-        if (!speakerphoneCleanupReport.getTimestamps().isEmpty()) {
-            html.append("<h3>Speakerphone Cleanup Events</h3>\n");
-
-            int index = 1;
-            for (String timestamp : speakerphoneCleanupReport.getTimestamps()) {
-                html.append("<b>Event ");
-                html.append(index);
-                html.append(": </b> ");
-                html.append(timestamp);
                 html.append("<br/>\n");
                 index += 1;
             }
