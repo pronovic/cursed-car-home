@@ -68,6 +68,7 @@ public class DailyReportService  extends Service {
     private void triggerDailyReportActivity() {
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification(R.drawable.cch, "Cursed Car Home Daily Report", System.currentTimeMillis());
+        notification.flags |= Notification.FLAG_AUTO_CANCEL; // so it goes away after being selected
         CharSequence contentTitle = "Cursed Car Home Daily Report";
         CharSequence contentText = "Daily report is ready";
         Intent notificationIntent = new Intent(this, DailyReportActivity.class);
