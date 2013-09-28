@@ -24,6 +24,8 @@
         </activity>
 
         <activity android:name=".activity.DailyReportActivity" />
+        
+        <activity android:name=".activity.HelpActivity" />
 
         <activity android:name=".activity.EditPreferencesActivity" />
 
