@@ -1,6 +1,7 @@
 Version 0.8.2   27 Sep 2013
 
     * Allow thread lifetimes up to 5 hours.
+    * Update the event database while the thread is running, instead of when it finishes.
 
 Version 0.8.1   15 Sep 2013
 

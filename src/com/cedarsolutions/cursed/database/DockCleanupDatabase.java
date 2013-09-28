@@ -51,17 +51,23 @@ public class DockCleanupDatabase {
 
     /** Insert an event into the database. */
     public void insertEvent(DockCleanupEvent event) {
-        ContentValues values = new ContentValues();
-        values.put("id", event.getId());
-        values.put("thread_start", event.getStartTime());
-        values.put("thread_stop", event.getStopTime());
-        values.put("disable_attempts", event.getDisableAttempts());
-        values.put("kill_attempts", event.getKillAttempts());
+        ContentValues values = getValuesForEvent(event);
         long result = this.database.insert("dock_cleanup_events", null, values);
         if (result == -1) {
             LOGGER.error("Failed to insert: " + event.toString());
         } else {
             LOGGER.debug("Inserted: " + event.toString());
+        }
+    }
+
+    /** Update an event in the database. */
+    public void updateEvent(DockCleanupEvent event) {
+        ContentValues values = getValuesForEvent(event);
+        long result = this.database.update("dock_cleanup_events", values, "id=?", new String[] { event.getId() });
+        if (result == -1) {
+            LOGGER.error("Failed to update: " + event.toString());
+        } else {
+            LOGGER.debug("Updated: " + event.toString());
         }
     }
 
@@ -90,6 +96,17 @@ public class DockCleanupDatabase {
         report.setEventsHandled(report.getStartTimes().size());
 
         return report;
+    }
+
+    /** Get a ContentValues object for an event. */
+    private static ContentValues getValuesForEvent(DockCleanupEvent event) {
+        ContentValues values = new ContentValues();
+        values.put("id", event.getId());
+        values.put("thread_start", event.getStartTime());
+        values.put("thread_stop", event.getStopTime());
+        values.put("disable_attempts", event.getDisableAttempts());
+        values.put("kill_attempts", event.getKillAttempts());
+        return values;
     }
 
     /** Fill disable attempts into a report. */

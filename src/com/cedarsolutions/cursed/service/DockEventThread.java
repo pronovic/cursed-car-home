@@ -93,10 +93,9 @@ public class DockEventThread implements Runnable {
             LOGGER.debug("Monitoring is not enabled");
         } else {
             LOGGER.debug("Monitoring is enabled");
-            this.event.markStart();
+            this.markStart();
             this.watchForAWhile();
-            this.event.markStop();
-            this.logEvent();
+            this.markStop();
         }
 
         this.stopParent();
@@ -119,7 +118,8 @@ public class DockEventThread implements Runnable {
         long limit = System.nanoTime() + convertMillisecondsToNanoseconds(this.config.getMaxLifetimeMs());
         while (System.nanoTime() <= limit) {
             this.disableCarModeIfNecessary();
-            forceStopCarHomeApp();
+            this.forceStopCarHomeApp();
+            this.updateDatabase();
             delay = delay * 2 >= this.config.getMaxDelayMs() ? this.config.getMaxDelayMs() : delay * 2;
             sleep(delay);
         }
@@ -163,10 +163,28 @@ public class DockEventThread implements Runnable {
         return (UiModeManager) this.getContext().getSystemService(Context.UI_MODE_SERVICE);
     }
 
-    /** Log the thread event to the database. */
-    private void logEvent() {
+    /** Mark that the thread started, and insert the related event. */
+    private void markStart() {
+        LOGGER.debug("Marking thread start.");
         DockCleanupDatabase database = new DockCleanupDatabase(this.getContext());
+        this.event.markStart();
         database.insertEvent(this.event);
+    }
+
+    /** Mark that the thread stopped, and update the related event. */
+    private void markStop() {
+        LOGGER.debug("Marking thread stop.");
+        DockCleanupDatabase database = new DockCleanupDatabase(this.getContext());
+        this.event.markStop();
+        database.updateEvent(this.event);
+    }
+
+    /** Update the event in the database with the latest counts. */
+    private void updateDatabase() {
+        LOGGER.debug("Updating event in database.");
+        DockCleanupDatabase database = new DockCleanupDatabase(this.getContext());
+        database.updateEvent(this.event);
+        LOGGER.debug("Done updating event in database.");
     }
 
 }
