@@ -7,6 +7,10 @@
         <item name="120000">2 minutes</item>
         <item name="300000">5 minutes</item>
         <item name="600000">10 minutes</item>
+        <item name="1800000">30 minutes</item>
+        <item name="3600000">1 hour</item>
+        <item name="7200000">2 hours</item>
+        <item name="18000000">5 hours</item>
     </string-array>
 
     <string-array name="maximumThreadLifetimeMsValues">
@@ -16,6 +20,10 @@
         <item name="120000">120000</item>
         <item name="300000">300000</item>
         <item name="600000">600000</item>
+        <item name="1800000">1800000</item>
+        <item name="3600000">3600000</item>
+        <item name="7200000">7200000</item>
+        <item name="18000000">18000000</item>
     </string-array>
 
     <string-array name="initialDelayIntervalMs">
