@@ -75,12 +75,11 @@ public class HelpActivity extends Activity {
         html.append("nothing has quite worked for me. This application is my attempt to solve the \n");
         html.append("problem. It's a \"big hammer\" approach &mdash; once a dock event is handled, a \n");
         html.append("background process starts.  This process watches for Car Home and kills it if it's\n");
-        html.append("ever found running.  Separately, I also hook the phone call process to disable the \n");
-        html.append("speakerphone every time an inbound or outbound call is initiated.  As a result, \n");
-        html.append("the application requires a lot of device permissions.\n");
+        html.append("ever found running.  Separately, I also hook into the phone call process to disable the \n");
+        html.append("speakerphone every time an inbound or outbound call is initiated.\n");
         html.append("</p>\n");
 
-        html.append("<h2>Using the Application</h2>");
+        html.append("<h2>Using the Application</h2>\n");
 
         html.append("<p>\n");
         html.append("The default configuration should work fine for most people.  If you tend to see \n");

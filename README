@@ -1,26 +1,64 @@
+WHAT IS THIS?
+
 This is the CursedCarHome Android application.  Source code is found at
 Google Code:
 
    https://code.google.com/p/cursed-car-home/
 
-My T-Mobile G2 Android phone, getting up there in years, is "cursed"
-periodically by a phantom that repeatedly turns on the Car Home application as
-if the phone were being docked. (It's probably a hardware problem, i.e. due to
-dirt on the USB port, but repeated cleaning hasn't really resolved the
-situation.)
+THE PROBLEM
 
-Besides the annoyance caused by the actual invocation of the Car Home
-application, a bigger problem is that Car Home enables the speakerphone and
-never turns it back off. It's not a good situation.
+My Android phone is "cursed" periodically by a phantom that repeatedly turns on
+the Car Home application as if the phone were being docked. (It's probably a
+hardware problem.) Besides the annoyance caused by the Car Home homepage
+itself, a bigger problem is that Car Home enables the speakerphone and never
+turns it back off.
 
-I've tried several of the existing applications in the Android
-marketplace, but nothing has quite worked for me. This application is my
-attempt to solve the problem. It's a "big hammer" -- there's a service which
-kills Car Home if it's ever found running, and I hook into the phone call
-process to disable the speakerphone every time an inbound or outbound call is
-initiated. (This can be controlled by configuration.)
+THE SOLUTION
 
-I'm still testing, but so far it seems to work ok. After I get some more
-confidence that what I'm doing doesn't hurt anything, I will probably release
-this to the marketplace. Before then, I just want to make the code available so
-it's useful to others you might have the same problem.    
+I've tried several of the existing applications in the Android marketplace, but
+nothing has quite worked for me. This application is my attempt to solve the
+problem. It's a "big hammer" approach -- once a dock event is handled, a
+background process starts.  This process watches for Car Home and kills it if
+it's ever found running.  Separately, I also hook into the phone call process
+to disable the speakerphone every time an inbound or outbound call is
+initiated.  As a result, the application requires a lot of device permissions.
+
+USING THE APPLICATION
+
+The default configuration should work fine for most people.  If you tend to see
+clusters of events over a period of time, you may want to change some values.
+
+For instance, on my phone, I often get several to a dozen dock events over a 30
+minute window (or sometimes even longer).  When first started, the background
+process is very aggressive about how often it looks for problems.  As the time
+between discovered problems grows, the background process gradually slows down
+and looks for problems less often.
+
+If you are seeing clusters of events, you may find that it takes too long for
+the background process to notice problems and clean them up.  You can adjust
+this behavior by decreasing the maximum delay.  You may also want to increase
+the maximum lifetime of the background process.
+
+I find the daily report useful, because it alerts me to problems that might
+have occurred when I was not looking at the phone (such as overnight when
+I am sleeping).  However, you can disable the report if you want to.  Even if
+the daily report is disabled, you can always run the report manually. Open
+the application and choosing Menu > Run Daily Report.
+
+REQUIRED PERMISSIONS
+
+Cursed Car Home requires a set of fairly intrusive set of device permissions.
+I wish I could do with less, but part of the reason Cursed Car Home works
+better for me than other applications is because it's different -- and the
+things it does require a lot of permissions. Below is a list of the required
+permissions and what they are needed for.
+
+Permission                  Purpose
+=========================================================================
+RECEIVE_BOOT_COMPLETED      Schedule the daily report
+KILL_BACKGROUND_PROCESSES   Kill the Car Home application
+PROCESS_OUTGOING_CALLS      Check the speakerphone state when calls start
+MODIFY_AUDIO_SETTINGS       Disable the speakerphone
+READ_PHONE_STATE            Disable the speakerphone
+
+
