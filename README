@@ -15,13 +15,14 @@ turns it back off.
 
 THE SOLUTION
 
-I've tried several of the existing applications in the Android marketplace, but
-nothing has quite worked for me. This application is my attempt to solve the
-problem. It's a "big hammer" approach -- once a dock event is handled, dock
-mode is immediately disabled.  Then, a background process starts.  This process
-watches for future dock events and also kills Car Home if it's ever found
-running.  Separately, I also hook into the phone call process to disable the
-speakerphone every time an inbound or outbound call is initiated.
+I've tried several of the existing applications in the Android marketplace
+(such as Disable Car Home and Dock No-Op), but nothing has quite worked for me.
+This application is my attempt to solve the problem. It's a "big hammer"
+approach -- once a dock event is handled, dock mode is immediately disabled.
+Then, a background process starts.  This process watches for future dock events
+and also kills Car Home if it's ever found running.  Separately, I also hook
+into the phone call process to disable the speakerphone every time an inbound
+or outbound call is initiated.
 
 USING THE APPLICATION
 
