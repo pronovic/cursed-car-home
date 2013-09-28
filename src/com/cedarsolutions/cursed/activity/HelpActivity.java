@@ -63,7 +63,7 @@ public class HelpActivity extends Activity {
         html.append("<p>\n");
         html.append("My Android phone is \"cursed\" periodically by a phantom that repeatedly turns on \n");
         html.append("the Car Home application as if the phone were being docked. (It's probably a \n");
-        html.append("hardware problem.) Besides the annoyance caused by the Car Home homepage \n");
+        html.append("hardware problem.) Besides the annoyance caused by the Car Home application \n");
         html.append("itself, a bigger problem is that Car Home enables the speakerphone and never \n");
         html.append("turns it back off.\n");
         html.append("</p>\n");
@@ -73,9 +73,10 @@ public class HelpActivity extends Activity {
         html.append("<p>\n");
         html.append("I've tried several of the existing applications in the Android marketplace, but \n");
         html.append("nothing has quite worked for me. This application is my attempt to solve the \n");
-        html.append("problem. It's a \"big hammer\" approach &mdash; once a dock event is handled, a \n");
-        html.append("background process starts.  This process watches for Car Home and kills it if it's\n");
-        html.append("ever found running.  Separately, I also hook into the phone call process to disable the \n");
+        html.append("problem. It's a \"big hammer\" approach &mdash; once a dock event is handled, dock \n");
+        html.append("mode is immediately disabled.  Then, a background process starts.  This process \n");
+        html.append("watches for future dock events and also kills Car Home if it's ever found \n");
+        html.append("running.  Separately, I also hook into the phone call process to disable the \n");
         html.append("speakerphone every time an inbound or outbound call is initiated.\n");
         html.append("</p>\n");
 

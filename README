@@ -9,7 +9,7 @@ THE PROBLEM
 
 My Android phone is "cursed" periodically by a phantom that repeatedly turns on
 the Car Home application as if the phone were being docked. (It's probably a
-hardware problem.) Besides the annoyance caused by the Car Home homepage
+hardware problem.) Besides the annoyance caused by the Car Home application
 itself, a bigger problem is that Car Home enables the speakerphone and never
 turns it back off.
 
@@ -17,11 +17,11 @@ THE SOLUTION
 
 I've tried several of the existing applications in the Android marketplace, but
 nothing has quite worked for me. This application is my attempt to solve the
-problem. It's a "big hammer" approach -- once a dock event is handled, a
-background process starts.  This process watches for Car Home and kills it if
-it's ever found running.  Separately, I also hook into the phone call process
-to disable the speakerphone every time an inbound or outbound call is
-initiated.  As a result, the application requires a lot of device permissions.
+problem. It's a "big hammer" approach -- once a dock event is handled, dock
+mode is immediately disabled.  Then, a background process starts.  This process
+watches for future dock events and also kills Car Home if it's ever found
+running.  Separately, I also hook into the phone call process to disable the
+speakerphone every time an inbound or outbound call is initiated.
 
 USING THE APPLICATION
 
@@ -49,11 +49,11 @@ the application and choose Menu > Run Daily Report.
 
 REQUIRED PERMISSIONS
 
-Cursed Car Home requires a fairly intrusive set of device permissions.
-I wish I could do with less, but part of the reason Cursed Car Home works
-better for me than other applications is because it's different -- and the
-things it does require a lot of permissions. Below is a list of the required
-permissions and what they are needed for.
+Cursed Car Home requires a fairly intrusive set of device permissions.  I wish
+I could do with less, but part of the reason Cursed Car Home works better for
+me is because it's different -- and the things it does require a lot of
+permissions. Below is a list of the required permissions and what they are
+needed for.
 
 Permission                  Purpose
 =========================================================================
