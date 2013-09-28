@@ -25,8 +25,10 @@ initiated.  As a result, the application requires a lot of device permissions.
 
 USING THE APPLICATION
 
-The default configuration should work fine for most people.  If you tend to see
-clusters of events over a period of time, you may want to change some values.
+By default, all features are disabled.  I recommend enabling all features.
+Once you have enabled a feature, the default settings for the other options
+should work fine for most people. If you tend to see clusters of events over a
+period of time, you may want to change some values.
 
 For instance, on my phone, I often get several to a dozen dock events over a 30
 minute window (or sometimes even longer).  When first started, the background
@@ -43,7 +45,7 @@ I find the daily report useful, because it alerts me to problems that might
 have occurred when I was not looking at the phone (such as overnight when
 I am sleeping).  However, you can disable the report if you want to.  Even if
 the daily report is disabled, you can always run the report manually. Open
-the application and choosing Menu > Run Daily Report.
+the application and choose Menu > Run Daily Report.
 
 REQUIRED PERMISSIONS
 

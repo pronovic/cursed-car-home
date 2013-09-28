@@ -1,8 +1,13 @@
+Version 1.5.1   27 Sep 2013
+
+    * Tweak the help documentation and README to be clearer about defaults.
+
 Version 1.5.0   27 Sep 2013
 
     * Allow thread lifetimes up to 5 hours.
     * Update the event database while the thread is running, instead of when it finishes.
     * Add a help screen with some basic instructions.
+    * Initial release to Google code.
 
 Version 0.0.0   15 Sep 2013
 

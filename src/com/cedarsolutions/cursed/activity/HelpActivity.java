@@ -82,8 +82,10 @@ public class HelpActivity extends Activity {
         html.append("<h2>Using the Application</h2>\n");
 
         html.append("<p>\n");
-        html.append("The default configuration should work fine for most people.  If you tend to see \n");
-        html.append("clusters of events over a period of time, you may want to change some values.\n");
+        html.append("By default, all features are disabled.  I recommend enabling all features.\n");
+        html.append("Once you have enabled a feature, the default settings for the other options\n");
+        html.append("should work fine for most people. If you tend to see clusters of events over a\n");
+        html.append("period of time, you may want to change some values.\n");
         html.append("</p>\n");
 
         html.append("<p>\n");
@@ -106,7 +108,7 @@ public class HelpActivity extends Activity {
         html.append("have occurred when I was not looking at the phone (such as overnight when \n");
         html.append("I am sleeping).  However, you can disable the report if you want to.  Even if\n");
         html.append("the daily report is disabled, you can always run the report manually. Open \n");
-        html.append("the application and choosing <b>Menu &gt; Run Daily Report</b>.\n");
+        html.append("the application and choose <b>Menu &gt; Run Daily Report</b>.\n");
         html.append("</p>\n");
 
         html.append("</html>");
