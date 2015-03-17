@@ -1,9 +1,11 @@
 WHAT IS THIS?
 
-This is the CursedCarHome Android application.  Source code is found at
-Google Code:
+This is the CursedCarHome Android application. It is a work-around
+for Android phones "cursed" by the Car Home application.  Source code
+was originally maintained at Google Code.  When Google retired that
+service, the code moved to BitBucket instead:
 
-   https://code.google.com/p/cursed-car-home/
+   https://bitbucket.org/cedarsolutions/cursed-car-home
 
 THE PROBLEM
 

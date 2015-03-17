@@ -1,7 +1,7 @@
 Version 1.5.3   unreleased
 
     * Move the project off Google Code and over to BitBucket.
-    * Update the README to be max of 80 columns wide, for BitBucket's overview screen.
+    * Update the README to reference the new BitBucket URL instead of Google Code.
 
 Version 1.5.2   28 Sep 2013
 
