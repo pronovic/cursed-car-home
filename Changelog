@@ -2,6 +2,7 @@ Version 1.5.3   unreleased
 
     * Move the project off Google Code and over to BitBucket.
     * Update the README to reference the new BitBucket URL instead of Google Code.
+    * Adjust Checkstyle configuration so it works with newer versions of the Eclipse plugin.
 
 Version 1.5.2   28 Sep 2013
 
