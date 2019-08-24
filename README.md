@@ -1,6 +1,6 @@
 _Note: As of December 2014, I no longer own the phone which had all of these
 problems (a Google-branded T-Mobile G2 purchased in late 2010).  As a result, I
-do not expect to enhance this code.  It is maintained for historical reference_
+do not expect to enhance this code.  It is maintained for historical reference only._
 
 # Cursed Car Home
 
